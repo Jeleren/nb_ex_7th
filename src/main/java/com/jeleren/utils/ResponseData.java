@@ -33,8 +33,11 @@ public class ResponseData {
     public static ResponseData notFound() {
         return new ResponseData(404, "Not Found");
     }
-    public static ResponseData badRequest() {
-        return new ResponseData(400, "Bad Request");
+    public static ResponseData badRequest(String mess) {
+        if (mess != null)
+            return new ResponseData(400,mess);
+        else
+            return new ResponseData(400,"Bad Request");
     }
     public static ResponseData forbidden() {
         return new ResponseData(403, "Forbidden");

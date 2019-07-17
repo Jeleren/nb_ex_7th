@@ -41,7 +41,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
     }
 
     @Override
-    public UserInfo register(UserInfo userInfo) {
+    public int register(UserInfo userInfo) {
         return userInfoDao.register(userInfo);
     }
 

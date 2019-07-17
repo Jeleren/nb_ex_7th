@@ -7,8 +7,8 @@
     <select id="login" resultType="com.jeleren.bean.UserInfo">
         select * from userinfo where binary username = #{username} and password = #{password}
     </select>
-    <insert id="register" parameterType="String" >
-        insert into userinfo where (username, password)
+    <insert id="register" parameterType="String">
+        insert into userinfo (username, password, image, description, fan_num, upload_num, follow_num, download_num) values (#{username}, #{password}, #{image}, "", 0, 0, 0, 0)
     </insert>
     <select id="findUserByUsername" parameterType="String" resultType="com.jeleren.bean.UserInfo">
         select * from userinfo where binary username = #{username}

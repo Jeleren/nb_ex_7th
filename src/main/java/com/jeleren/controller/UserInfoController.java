@@ -43,14 +43,16 @@ public class UserInfoController {
         return responseData.getData();
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> register(UserInfo userInfo) {
-        UserInfo user = userInfoService.findUserByUsername(userInfo.getUsername());
-        if (user != null) {
-            return null;
+    public ResponseData register(HttpServletRequest request) {
+        String username = request.getParameter("username");
+        UserInfo user = userInfoService.findUserByUsername(username);
+        if (user == null) {
+            userInfoService.register(new UserInfo(username, request.getParameter("password")));
+            return ResponseData.ok();
         }
-        return null;
+        return ResponseData.badRequest("该用户已注册");
     }
 
     @RequestMapping(value = "/{user_id}", method = RequestMethod.GET)

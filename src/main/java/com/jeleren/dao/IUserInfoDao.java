@@ -10,7 +10,7 @@ public interface IUserInfoDao {
 
     UserInfo login(UserInfo userInfo);
 
-    UserInfo register(UserInfo userInfo);
+    int register(UserInfo userInfo);
 
     void addUser(UserInfo userInfo);
 

@@ -11,7 +11,7 @@ public interface IUserInfoService {
     UserInfo selectUserById(int id);
     void updateUser(UserInfo userInfo);
 
-    UserInfo register (UserInfo userInfo);
+    int register (UserInfo userInfo);
 
     UserInfo findUserByUsername (String username);
 }
