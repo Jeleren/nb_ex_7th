@@ -23,14 +23,14 @@ import java.io.IOException;
  * @since JDK 1.8
  */
 @RestController
-@RequestMapping("pic")
+@RequestMapping("image")
 public class ImageInfoController {
 
     @Autowired
     private IImageInfoService iImageInfoService;
 
 
-    @RequestMapping(value = "/uploadPic", method = RequestMethod.POST)
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseBody
     public String uploadPic(ImageInfo imageInfo, HttpServletRequest request) throws IOException {
         MultipartFile imageFile = imageInfo.getImageFile();
@@ -48,7 +48,7 @@ public class ImageInfoController {
             //得到图片后缀
             String ext = FilenameUtils.getExtension(imageFile
                     .getOriginalFilename());
-            imgPath = url + "\\" + name + "." + ext;
+            imgPath = "images/" + name + "." + ext;
 
             imageInfo.setImage(imgPath);
             //将信息保存到数据库中
