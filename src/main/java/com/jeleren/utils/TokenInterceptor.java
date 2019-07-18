@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSONObject;
-//import com.jeleren.charles.model.Admin;
-//import com.xforce.charles.model.Login;
 import com.jeleren.utils.JWT;
 import com.jeleren.utils.ResponseData;
 
