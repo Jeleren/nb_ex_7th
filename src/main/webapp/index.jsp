@@ -13,7 +13,7 @@
 <body>
 <%--用于测试文件上传功能页面--%>
 <form action="${pageContext.request.contextPath}/pic/uploadPic" method="post" enctype="multipart/form-data">
-    <input type="text" name="name"><br>
+    <input type="text" name="label"><br>
     <input type="file" name="imageFile"><br>
     <input type="submit">
 </form>
