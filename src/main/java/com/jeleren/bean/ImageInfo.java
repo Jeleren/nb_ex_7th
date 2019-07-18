@@ -13,20 +13,26 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageInfo {
     private MultipartFile imageFile;
     private int id;
+    private int if_active;
     private String image;
-    private String label;
+    private String name;
     private String cates;
     private int user_id;
     private String description;
     private String keywords;//按空格分类
-    private String pre_image;//预览图
 
     public ImageInfo() {
         cates ="";
-        user_id=1;
         description="";
         keywords="";
-        pre_image="";
+    }
+
+    public int getIf_active() {
+        return if_active;
+    }
+
+    public void setIf_active(int if_active) {
+        this.if_active = if_active;
     }
 
     public MultipartFile getImageFile() {
@@ -53,12 +59,8 @@ public class ImageInfo {
         this.image = image;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
+    public String getName() {
+        return name;
     }
 
     public String getCates() {
@@ -85,6 +87,10 @@ public class ImageInfo {
         this.description = description;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getKeywords() {
         return keywords;
     }
@@ -93,11 +99,18 @@ public class ImageInfo {
         this.keywords = keywords;
     }
 
-    public String getPre_image() {
-        return pre_image;
-    }
-
-    public void setPre_image(String pre_image) {
-        this.pre_image = pre_image;
+    @Override
+    public String toString() {
+        return "ImageInfo{" +
+                "imageFile=" + imageFile +
+                ", id=" + id +
+                ", if_active=" + if_active +
+                ", image='" + image + '\'' +
+                ", name='" + name + '\'' +
+                ", cates='" + cates + '\'' +
+                ", user_id=" + user_id +
+                ", description='" + description + '\'' +
+                ", keywords='" + keywords + '\'' +
+                '}';
     }
 }
