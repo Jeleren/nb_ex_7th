@@ -22,7 +22,7 @@ public class JWT {
             ObjectMapper mapper = new ObjectMapper();
             String jsonString = mapper.writeValueAsString(object);
             claims.put(PAYLOAD, jsonString);
-//            claims.put(EXP, System.currentTimeMillis() + maxAge);
+            claims.put(EXP, System.currentTimeMillis() + maxAge);
             return signer.sign(claims);
         } catch(Exception e) {
             return null;

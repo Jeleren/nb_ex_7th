@@ -27,22 +27,12 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handler) throws Exception {
         response.setCharacterEncoding("utf-8");
-        String token = request.getParameter("token");
+        String token = request.getHeader("Authorization");
         System.out.println("interceptor token    "+token);
         ResponseData responseData = ResponseData.ok();
         //token不存在
         if (null != token) {
             UserInfo user = JWT.unsign(token, UserInfo.class);
-//            String loginId = request.getParameter("loginId");
-//            //解密token后的loginId与用户传来的loginId不一致，一般都是token过期
-//            if (null != loginId && null != login) {
-//                if (Integer.parseInt(loginId) == login.getId()) {
-//                    return true;
-//                } else {
-//                    responseData = ResponseData.forbidden();
-//                    responseMessage(response, response.getWriter(), responseData);
-//                    return false;
-//                }
             if(user!=null) {
                 return true;
             } else {
