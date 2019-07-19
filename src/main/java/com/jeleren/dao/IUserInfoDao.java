@@ -20,6 +20,8 @@ public interface IUserInfoDao {
 
     UserInfo findUserByUsername(String username);
 
+    void updataUploadNum (int user_id);
+
     //修改关注记录
     boolean editUserFollow(@Param("user_id") int user_id, @Param("record") String record);
 

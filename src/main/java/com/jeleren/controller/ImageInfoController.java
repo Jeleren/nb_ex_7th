@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * ClassName: ImageInfoController <br/>
@@ -64,6 +65,7 @@ public class ImageInfoController {
             imageInfo.setDescription(request.getParameter("description"));
             imageInfo.setName(request.getParameter("name"));
             imageInfo.setIf_active(imageInfo.getIf_active());
+            imageInfo.setAdd_time(new Date(System.currentTimeMillis()));
             // 以绝对路径保存重名命后的图片
             imageFile.transferTo(new File(absoPath));
             //将信息保存到数据库中

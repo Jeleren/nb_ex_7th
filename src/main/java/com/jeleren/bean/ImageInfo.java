@@ -2,6 +2,8 @@ package com.jeleren.bean;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
+
 /**
  * ClassName: ImageInfo <br/>
  * Description: <br/>
@@ -21,10 +23,31 @@ public class ImageInfo {
     private String description;
     private String keywords;//按空格分类
 
+    private Date add_time;
+    private int like_num;
+    private int collect_num;
+
+
+    public int getLike_num() {
+        return like_num;
+    }
+
+    public void setLike_num(int like_num) {
+        this.like_num = like_num;
+    }
+
     public ImageInfo() {
         cates ="";
         description="";
         keywords="";
+    }
+
+    public Date getAdd_time() {
+        return add_time;
+    }
+
+    public void setAdd_time(Date add_time) {
+        this.add_time = add_time;
     }
 
     public int getIf_active() {
@@ -112,5 +135,13 @@ public class ImageInfo {
                 ", description='" + description + '\'' +
                 ", keywords='" + keywords + '\'' +
                 '}';
+    }
+
+    public int getCollect_num() {
+        return collect_num;
+    }
+
+    public void setCollect_num(int collect_num) {
+        this.collect_num = collect_num;
     }
 }
