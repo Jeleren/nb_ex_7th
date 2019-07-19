@@ -1,6 +1,9 @@
 package com.jeleren.service;
 
 import com.jeleren.bean.ImageInfo;
+import com.jeleren.bean.SearchList;
+
+import java.util.List;
 
 /**
  * ClassName: IImageInfoService <br/>
@@ -12,4 +15,5 @@ import com.jeleren.bean.ImageInfo;
  */
 public interface IImageInfoService {
     void add(ImageInfo imageInfo);
+    List<ImageInfo> searchImage(SearchList searchList);
 }

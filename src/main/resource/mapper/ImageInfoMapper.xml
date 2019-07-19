@@ -3,6 +3,50 @@
 <mapper namespace="com.jeleren.dao.IImageInfoDao">
     <insert id="add" parameterType="com.jeleren.bean.ImageInfo">
       insert into images (image, name, cates, user_id, description, keywords, if_active) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active})
-  </insert>
+    </insert>
+    <!--key cate pat-->
+    <!--select-->
+    <!--images.*-->
+    <!--from images-->
+    <!--inner join image_keywords k on images.id = k.id-->
+    <!--<where>-->
+  <!---->
+    <!--</where>-->
+    <select id="searchImage"  resultType="com.jeleren.bean.ImageInfo">
+        <!--select * from images-->
+        <!--<where>-->
+            <!--<if test ="sList.cateList.size()>0">-->
+                <!--cates in <foreach collection="sList.cateList" item="cate" open="(" separator="," close=")">-->
+                       <!--#{cate}-->
+                <!--</foreach>-->
+            <!--</if>-->
+            <!--<if test ="sList.keyword!=null">-->
+               <!--and id in (-->
+                  <!--select id in image_keywords where-->
+                    <!--keyword like CONCAT('%',#{sList.keyword},'$') and images.id = image_keywords.id-->
+                <!--)-->
+            <!--</if>-->
+            <!--<if test = "sList.pattern!=null">-->
+                <!--and pattern = #{sList.pattern}-->
+            <!--</if>-->
+        <!--</where>-->
+        SELECT DISTINCT images.*
+        FROM images
+        inner JOIN image_keywords ON images.id = image_keywords.id
+        <where>
+            <if test="sList.pattern!=null">
+                images.pattern = #{sList.pattern}
+            </if>
+            <if test="sList.cateList.size()>0">
+                and images.cates in <foreach collection="sList.cateList" item="cate" open="(" separator="," close=")">
+                #{cate}
+            </foreach>
+            </if>
+            <if test="sList.keyword!=null">
+                and image_keywords.keyword like concat('%',#{sList.keyword},'%')
+            </if>
 
+        </where>
+         order by images.add_time ${sList.seq}
+    </select>
 </mapper>

@@ -1,10 +1,14 @@
 package com.jeleren.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.jeleren.bean.ImageInfo;
+import com.jeleren.bean.SearchList;
 import com.jeleren.dao.IImageInfoDao;
 import com.jeleren.service.IImageInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * ClassName: IImageInfoImpl <br/>
@@ -23,5 +27,11 @@ public class ImageInfoServiceImpl implements IImageInfoService {
     @Override
     public void add(ImageInfo imageInfo) {
         iImageInfoDao.add(imageInfo);
+    }
+
+    @Override
+    public List<ImageInfo> searchImage(SearchList searchList){
+        PageHelper.startPage(searchList.getPage(),searchList.getSize());
+        return iImageInfoDao.searchImage(searchList);
     }
 }

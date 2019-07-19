@@ -2,6 +2,8 @@ package com.jeleren.bean;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
+
 /**
  * ClassName: ImageInfo <br/>
  * Description: <br/>
@@ -13,18 +15,37 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageInfo {
     private MultipartFile imageFile;
     private int id;
-    private int if_active;
+    private int if_active;//图片状态
     private String image;
-    private String name;
-    private String cates;
+    private String name;//图片名称
+    private String cates;//单独的一个字符
     private int user_id;
     private String description;
-    private String keywords;//按空格分类
-
+    private String keywords;//无用属性，暂时没有删除
+    private String pattern;//文件后缀
+    private Date add_time;//添加时间
+    private int like_num;//点赞数
+    private int collect_num;//收藏数
     public ImageInfo() {
         cates ="";
         description="";
         keywords="";
+    }
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
+
+    public Date getAdd_time() {
+        return add_time;
+    }
+
+    public void setAdd_time(Date add_time) {
+        this.add_time = add_time;
     }
 
     public int getIf_active() {
