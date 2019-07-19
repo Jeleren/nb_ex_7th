@@ -1,7 +1,9 @@
 package com.jeleren.controller;
 
 import com.jeleren.bean.ImageInfo;
+import com.jeleren.bean.ImageLike;
 import com.jeleren.service.IImageInfoService;
+import com.jeleren.service.IImageLikeService;
 import com.jeleren.utils.ResponseData;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class ImageInfoController {
 
     @Autowired
     private IImageInfoService iImageInfoService;
+
+    @Autowired
+    private IImageLikeService iImageLikeService;
 
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -69,5 +74,26 @@ public class ImageInfoController {
         return res;
     }
 
+    //图片点赞或取消点赞
+    @RequestMapping(value = "/like", method = RequestMethod.POST)
+    public ResponseData like(ImageLike imageLike) {
+        int image = imageLike.getImage();
+        int user = imageLike.getUser();
+        boolean tag = iImageLikeService.checkImageLiked(image, user);
+        if(tag){
+            boolean cancel = iImageLikeService.cancelImageLike(image, user);
+            if(cancel)
+                return ResponseData.ok();
+            else
+                return ResponseData.badRequest("取消点赞成功");
+        }else {
+            boolean like = iImageLikeService.imageLike(image, user);
+            if(like)
+                return ResponseData.ok();
+            else
+                return ResponseData.badRequest("点赞成功");
+        }
+
+    }
 
 }

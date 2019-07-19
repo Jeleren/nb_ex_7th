@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 
@@ -83,13 +84,13 @@ public class UserInfoController {
             if(cancel)
                 return ResponseData.ok();
             else
-                return ResponseData.badRequest("取消关注失败");
+                return ResponseData.badRequest("取消关注成功");
         }else {
             boolean follow = userRelationService.follow(follow_id, fan_id);
             if(follow)
                 return ResponseData.ok();
             else
-                return ResponseData.badRequest("关注失败");
+                return ResponseData.badRequest("关注成功");
         }
 
     }

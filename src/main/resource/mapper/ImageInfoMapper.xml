@@ -4,5 +4,15 @@
     <insert id="add" parameterType="com.jeleren.bean.ImageInfo">
       insert into images (image, name, cates, user_id, description, keywords, if_active) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active})
   </insert>
+    <update id="editImageLikeNum">
+        update images set
+        <if test="record == 'delete'">
+            like_num = like_num - 1
+        </if>
+        <if test="record == 'add'">
+            like_num = like_num + 1
+        </if>
+        where id = #{image}
+    </update>
 
 </mapper>

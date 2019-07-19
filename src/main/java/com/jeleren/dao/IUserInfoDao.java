@@ -25,4 +25,5 @@ public interface IUserInfoDao {
 
     //修改粉丝记录
     boolean editUserFans(@Param("user_id") int user_id, @Param("record") String record);
+
 }

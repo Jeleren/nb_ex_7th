@@ -1,6 +1,7 @@
 package com.jeleren.dao;
 
 import com.jeleren.bean.ImageInfo;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * ClassName: IImageInfoDao <br/>
@@ -12,4 +13,7 @@ import com.jeleren.bean.ImageInfo;
  */
 public interface IImageInfoDao {
     void add(ImageInfo imageInfo);
+
+    //修改点赞数目
+    boolean editImageLikeNum(@Param("image") int image, @Param("record") String record);
 }
