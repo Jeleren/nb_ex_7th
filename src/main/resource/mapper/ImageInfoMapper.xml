@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jeleren.dao.IImageInfoDao">
     <insert id="add" parameterType="com.jeleren.bean.ImageInfo">
-      insert into images (image, name, cates, user_id, description, keywords, if_active) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active})
+      insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0)
   </insert>
 
+    <select id=""></select>
 </mapper>

@@ -10,7 +10,7 @@
 <mapper namespace="com.jeleren.dao.ILunboImgDao">
 
     <select id="findShowImg"  resultType="com.jeleren.bean.LunboImg">
-         select * from imgLunbo where ifShow = 1;
+         select * from banner where if_show = 1;
     </select>
 
 </mapper>

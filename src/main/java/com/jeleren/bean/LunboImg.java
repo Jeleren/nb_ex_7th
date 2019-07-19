@@ -10,49 +10,49 @@ package com.jeleren.bean;
  ***********************************************/
 public class LunboImg {
     private int id;
-    private  String imgUrl;
+    private  String image;
     private int ifShow;
-    private  String imgName;
+    private  String title;
 
     public int getId() {
         return id;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
+    public String getimage() {
+        return image;
     }
 
     public int getIfShow() {
         return ifShow;
     }
 
-    public String getImgName() {
-        return imgName;
+    public String gettitle() {
+        return title;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void setimage(String image) {
+        this.image = image;
     }
 
     public void setIfShow(int ifShow) {
         this.ifShow = ifShow;
     }
 
-    public void setImgName(String imgName) {
-        this.imgName = imgName;
+    public void settitle(String title) {
+        this.title = title;
     }
 
     @Override
     public String toString() {
         return "LunboImg{" +
                 "id=" + id +
-                ", imgUrl='" + imgUrl + '\'' +
+                ", image='" + image + '\'' +
                 ", ifShow=" + ifShow +
-                ", imgName='" + imgName + '\'' +
+                ", title='" + title + '\'' +
                 '}';
     }
 }
