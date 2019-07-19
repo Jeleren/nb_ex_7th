@@ -24,4 +24,25 @@
     <update id="updateUser" parameterType="com.jeleren.bean.UserInfo">
         update userinfo set username = #{username}, password = #{password} where id = #{id}
     </update>
+
+    <update id="editUserFollow">
+        update userinfo set
+        <if test="record == 'delete'">
+            follow_num = follow_num - 1
+        </if>
+        <if test="record == 'add'">
+            follow_num = follow_num + 1
+        </if>
+        where id = #{user_id}
+    </update>
+    <update id="editUserFans">
+        update userinfo set
+        <if test="record == 'delete'">
+            fan_num = fan_num - 1
+        </if>
+        <if test="record == 'add'">
+            fan_num = fan_num + 1
+        </if>
+        where id = #{user_id}
+    </update>
 </mapper>

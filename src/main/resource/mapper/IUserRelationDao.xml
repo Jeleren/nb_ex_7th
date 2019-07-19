@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jeleren.dao.IUserRelationDao">
+    <insert id="follow">
+        insert into focus (follow_id, fan_id) values (#{follow_id}, #{fan_id})
+    </insert>
+
+    <select id="checkFollowed" resultType="com.jeleren.bean.UserRelation">
+        select * from focus where follow_id = #{follow_id} and fan_id = #{fan_id}
+    </select>
+    <delete id="cancelFollow">
+        delete from focus
+        <where>
+            <if test="follow_id != null">
+                and follow_id = #{follow_id}
+            </if>
+            <if test="fan_id != null">
+                and fan_id = #{fan_id}
+            </if>
+        </where>
+    </delete>
+
+    <select id="getFansList" resultType="com.jeleren.bean.UserInfo">
+        select * from userinfo where id in (select fan_id from focus where follow_id = #{user_id})
+    </select>
+    <select id="getFollowList" resultType="com.jeleren.bean.UserInfo">
+        select * from userinfo where id in (select follow_id from focus where fan_id = #{user_id});
+    </select>
+</mapper>

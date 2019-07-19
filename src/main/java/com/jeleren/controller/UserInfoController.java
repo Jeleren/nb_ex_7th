@@ -1,18 +1,16 @@
 package com.jeleren.controller;
 
-import com.github.pagehelper.PageInfo;
-import com.jeleren.bean.Role;
+import com.jeleren.bean.UserRelation;
 import com.jeleren.bean.UserInfo;
+import com.jeleren.service.IUserRelationService;
 import com.jeleren.service.IRoleService;
 import com.jeleren.service.IUserInfoService;
 import com.jeleren.utils.JWT;
 import com.jeleren.utils.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.registry.infomodel.User;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +23,9 @@ public class UserInfoController {
 
     @Autowired
     private IRoleService roleService;
+
+    @Autowired
+    private IUserRelationService userRelationService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
@@ -60,4 +61,48 @@ public class UserInfoController {
         System.out.println(user_id);
         return userInfoService.selectUserById(user_id);
     }
+
+    @GetMapping(value = "/fan/{user_id}")
+    public List<UserInfo> getFansList(@PathVariable(name = "user_id", required = true)int user_id) {
+        return userRelationService.getFansList(user_id);
+    }
+
+    @GetMapping(value = "/follow/{user_id}")
+    public List<UserInfo> getFollowerList(@PathVariable(name = "user_id", required = true)int user_id) {
+        return userRelationService.getFollowList(user_id);
+    }
+
+    @PostMapping(value = "/follow")
+    @ResponseBody
+    public ResponseData follow(UserRelation focus) {
+        int fan_id = focus.getFan_id();    //当前用户
+        int follow_id = focus.getFollow_id();  //要关注的人
+        boolean tag = userRelationService.checkFollowed(follow_id, fan_id);
+        if(tag){
+            boolean cancel = userRelationService.cancelFollow(follow_id, fan_id);
+            if(cancel)
+                return ResponseData.ok();
+            else
+                return ResponseData.badRequest("取消关注失败");
+        }else {
+            boolean follow = userRelationService.follow(follow_id, fan_id);
+            if(follow)
+                return ResponseData.ok();
+            else
+                return ResponseData.badRequest("关注失败");
+        }
+
+    }
+
+//    @DeleteMapping(value = "/follow")
+//    @ResponseBody
+//    public ResponseData cancelFollow(UserRelation focus) {
+//        int user_id = focus.getUserid();
+//        int fan_id = focus.getFansid();
+//        boolean tag = focusService.cancelFollow(user_id, fan_id);
+//        if(tag)
+//            return ResponseData.ok();
+//        else
+//            return ResponseData.badRequest("取消关注失败");
+//    }
 }
