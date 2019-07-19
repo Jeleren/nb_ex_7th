@@ -5,6 +5,7 @@ import com.jeleren.bean.SearchList;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * ClassName: IImageInfoDao <br/>
@@ -18,4 +19,7 @@ public interface IImageInfoDao {
     void add(ImageInfo imageInfo);
     List<ImageInfo> searchImage(@Param("sList") SearchList searchList);
 
+
+    //修改点赞数目
+    boolean editImageLikeNum(@Param("image") int image, @Param("record") String record);
 }

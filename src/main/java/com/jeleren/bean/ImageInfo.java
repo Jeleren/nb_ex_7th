@@ -26,6 +26,16 @@ public class ImageInfo {
     private Date add_time;//添加时间
     private int like_num;//点赞数
     private int collect_num;//收藏数
+
+
+    public int getLike_num() {
+        return like_num;
+    }
+
+    public void setLike_num(int like_num) {
+        this.like_num = like_num;
+    }
+
     public ImageInfo() {
         cates ="";
         description="";
@@ -47,6 +57,7 @@ public class ImageInfo {
     public void setAdd_time(Date add_time) {
         this.add_time = add_time;
     }
+
 
     public int getIf_active() {
         return if_active;
@@ -133,5 +144,13 @@ public class ImageInfo {
                 ", description='" + description + '\'' +
                 ", keywords='" + keywords + '\'' +
                 '}';
+    }
+
+    public int getCollect_num() {
+        return collect_num;
+    }
+
+    public void setCollect_num(int collect_num) {
+        this.collect_num = collect_num;
     }
 }

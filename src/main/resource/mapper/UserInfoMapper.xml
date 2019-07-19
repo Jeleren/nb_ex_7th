@@ -45,4 +45,8 @@
         </if>
         where id = #{user_id}
     </update>
+
+    <update id="updateUploadNum" parameterType="int">
+        update userinfo set upload_num = upload_num++ where id = #{user_id}
+    </update>
 </mapper>

@@ -31,7 +31,6 @@ public class LunboImgController {
 
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    @ResponseBody
     public List getImg(){
         List<LunboImg> imgs = lunboImgService.findShowImg();
         System.out.println(imgs.get(0));

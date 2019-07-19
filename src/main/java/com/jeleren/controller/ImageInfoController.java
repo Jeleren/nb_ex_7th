@@ -3,7 +3,9 @@ package com.jeleren.controller;
 import com.github.pagehelper.PageHelper;
 import com.jeleren.bean.ImageInfo;
 import com.jeleren.bean.SearchList;
+import com.jeleren.bean.ImageLike;
 import com.jeleren.service.IImageInfoService;
+import com.jeleren.service.IImageLikeService;
 import com.jeleren.utils.ResponseData;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.ibatis.annotations.Param;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 /**
  * ClassName: ImageInfoController <br/>
@@ -35,6 +38,9 @@ public class ImageInfoController {
 
     @Autowired
     private IImageInfoService iImageInfoService;
+
+    @Autowired
+    private IImageLikeService iImageLikeService;
 
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -65,6 +71,7 @@ public class ImageInfoController {
             imageInfo.setDescription(request.getParameter("description"));
             imageInfo.setName(request.getParameter("name"));
             imageInfo.setIf_active(imageInfo.getIf_active());
+            imageInfo.setAdd_time(new Date(System.currentTimeMillis()));
             // 以绝对路径保存重名命后的图片
             imageFile.transferTo(new File(absoPath));
             //将信息保存到数据库中
@@ -114,5 +121,26 @@ public class ImageInfoController {
         return imageInfo1;
     }
 
+    //图片点赞或取消点赞
+    @RequestMapping(value = "/like", method = RequestMethod.POST)
+    public ResponseData like(ImageLike imageLike) {
+        int image = imageLike.getImage();
+        int user = imageLike.getUser();
+        boolean tag = iImageLikeService.checkImageLiked(image, user);
+        if(tag){
+            boolean cancel = iImageLikeService.cancelImageLike(image, user);
+            if(cancel)
+                return ResponseData.ok();
+            else
+                return ResponseData.badRequest("取消点赞成功");
+        }else {
+            boolean like = iImageLikeService.imageLike(image, user);
+            if(like)
+                return ResponseData.ok();
+            else
+                return ResponseData.badRequest("点赞成功");
+        }
+
+    }
 
 }
