@@ -1,14 +1,11 @@
 package com.jeleren.controller;
 
-import com.github.pagehelper.PageHelper;
 import com.jeleren.bean.ImageInfo;
-import com.jeleren.bean.SearchList;
 import com.jeleren.bean.ImageLike;
 import com.jeleren.service.IImageInfoService;
 import com.jeleren.service.IImageLikeService;
 import com.jeleren.utils.ResponseData;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,9 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
 
 /**
@@ -38,10 +32,6 @@ public class ImageInfoController {
 
     @Autowired
     private IImageInfoService iImageInfoService;
-
-    @Autowired
-    private IImageLikeService iImageLikeService;
-
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
@@ -80,67 +70,6 @@ public class ImageInfoController {
         ResponseData res = ResponseData.ok();
         res.putDataValue("image", imgPath);
         return res;
-    }
-
-    @RequestMapping(value = "/searchImage", method = RequestMethod.POST)
-    @ResponseBody
-    public List searchImage(ImageInfo imageInfo, HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
-        String keyword = httpServletRequest.getParameter("keyword");
-        String cates = httpServletRequest.getParameter("-cates");
-        String seq = httpServletRequest.getParameter("order");
-        int page =Integer.parseInt(httpServletRequest.getParameter("page"));
-        int size =Integer.parseInt(httpServletRequest.getParameter("size"));
-//        PageHelper.startPage(page, num);
-        /*
-        这个地方，逻辑处理需要严谨
-         */
-        String[] tmp2 = null;
-        List<String> cateList =new ArrayList<>();
-        if (cates != null ){
-            tmp2 = cates.split(" ");
-            for(int i =0;i<tmp2.length;i++){
-                cateList.add(tmp2[i]);
-            }
-
-        }
-        String pattern = httpServletRequest.getParameter("pattern");
-
-        SearchList searchList = new SearchList();
-        searchList.setKeyword(keyword);
-        searchList.setCateList(cateList);
-        searchList.setPattern(pattern);
-        searchList.setPage(page);
-        searchList.setSize(size);
-        if(seq.equals("-")){
-            searchList.setSeq("DESC");
-        }else{
-            searchList.setSeq("ASC");
-        }
-        List<ImageInfo> imageInfo1=iImageInfoService.searchImage(searchList);
-
-        return imageInfo1;
-    }
-
-    //图片点赞或取消点赞
-    @RequestMapping(value = "/like", method = RequestMethod.POST)
-    public ResponseData like(ImageLike imageLike) {
-        int image = imageLike.getImage();
-        int user = imageLike.getUser();
-        boolean tag = iImageLikeService.checkImageLiked(image, user);
-        if(tag){
-            boolean cancel = iImageLikeService.cancelImageLike(image, user);
-            if(cancel)
-                return ResponseData.ok();
-            else
-                return ResponseData.badRequest("取消点赞成功");
-        }else {
-            boolean like = iImageLikeService.imageLike(image, user);
-            if(like)
-                return ResponseData.ok();
-            else
-                return ResponseData.badRequest("点赞成功");
-        }
-
     }
 
 }
