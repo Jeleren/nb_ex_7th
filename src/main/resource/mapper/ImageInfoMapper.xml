@@ -4,10 +4,9 @@
     <insert id="add" parameterType="com.jeleren.bean.ImageInfo"  useGeneratedKeys="true"  keyProperty="id">
       insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num, pattern
       ) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0, #{pattern})
-        <!--<selectKey keyProperty="id" resultType="int" >-->
-            <!--SELECT @@IDENTITY AS ID-->
-        <!--</selectKey>-->
   </insert>
+    <select id="searchImage" resultType="com.jeleren.bean.ImageInfo">
+        SELECT DISTINCT images.*
     <!--<insert id="add" parameterType="com.jeleren.bean.ImageInfo">-->
             <!--insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0)-->
     <!--</insert>-->
@@ -114,12 +113,22 @@
             <result property="image" column="image"/>
             <result property="name" column="name"/>
             <result property="keywords" column="keywords"/>
+            <result property="pattern" column="pattern"/>
+            <result property="add_time" column="add_time"/>
+            <result property="description" column="description"/>
+            <result property="cates" column="cates"/>
+            <result property="like_num" column="like_num"/>
         </association>
     </resultMap>
     <select id="getMainImage" parameterType="int" resultMap="imageResult">
         select images.image,
         images.name,
         images.keywords,
+        images.add_time,
+        images.cates,
+        images.description,
+        images.like_num,
+        images.pattern,
         images.id as image_id,
         u.image as user_image,
         u.username,
@@ -139,6 +148,10 @@
         select images.image,
         images.name,
         images.keywords,
+        images.add_time,
+        images.cates,
+        images.description,
+        images.pattern,
         images.id as image_id,
         u.image as user_image,
         u.username,
@@ -147,7 +160,6 @@
         uil.rela_id,
         ur.id
         from images
---         inner join image_group ig on images.id = ig.image_id
         inner join userinfo u on u.id=images.user_id
         left join user_image_like uil on uil.image_id=images.id and uil.user_id = #{user_id}
         left join user_rela ur on ur.user_id = u.id and ur.fan_id = #{user_id}
