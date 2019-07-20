@@ -50,8 +50,6 @@ public class ImageInfoController {
         String imgPath = null;//装配后的图片地址
         if (imageFile != null && !imageFile.isEmpty()) {
             //使用时间戳给图片重命名
-//            String url = request.getSession().getServletContext().getRealPath("/").split("\\\\target")[0] +
-// "/src/main/webapp/images/";
             String url = request.getSession().getServletContext().getRealPath("/images/");
             File file = new File(url);
             if (!file.isDirectory()) {
@@ -92,10 +90,10 @@ public class ImageInfoController {
         return res;
     }
 
-    @RequestMapping(value = "/searchImage", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     @ResponseBody
     public List<ImageResult> searchImage(HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
-        String keyword = httpServletRequest.getParameter("keyword");
+        String keyword = httpServletRequest.getParameter("search");
         String cates = httpServletRequest.getParameter("-cates");
         String seq = httpServletRequest.getParameter("order");
         String temp =  httpServletRequest.getParameter("page");

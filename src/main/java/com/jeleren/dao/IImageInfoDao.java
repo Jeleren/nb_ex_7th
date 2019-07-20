@@ -1,5 +1,6 @@
 package com.jeleren.dao;
 
+import com.jeleren.bean.ImageAndUserResult;
 import com.jeleren.bean.ImageInfo;
 import com.jeleren.bean.ImageResult;
 import org.apache.ibatis.annotations.Param;
@@ -27,7 +28,7 @@ public interface IImageInfoDao {
     List<ImageResult> getMainImage(@Param("user_id") int user_id, @Param("group_id") int group_id);
 
     ImageResult getImageInfo(@Param("image_id") int image_id, @Param("user_id") int user_id);
-    List<ImageInfo> searchImage(@Param("sList") SearchList searchList);
+//    List<ImageInfo> searchImage(@Param("sList") SearchList searchList);
     List<ImageResult> searchImage(@Param("sList") SearchList searchList);
 
 
