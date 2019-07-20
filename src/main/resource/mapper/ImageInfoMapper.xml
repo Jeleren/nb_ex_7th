@@ -8,13 +8,79 @@
             <!--SELECT @@IDENTITY AS ID-->
         <!--</selectKey>-->
   </insert>
-    <insert id="add" parameterType="com.jeleren.bean.ImageInfo">
-            insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0)
-    </insert>
-    <select id="searchImage" resultType="com.jeleren.bean.ImageInfo">
-        SELECT DISTINCT images.*
+    <!--<insert id="add" parameterType="com.jeleren.bean.ImageInfo">-->
+            <!--insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0)-->
+    <!--</insert>-->
+    <!--<select id="searchImage" resultType="com.jeleren.bean.ImageInfo">-->
+        <!--SELECT DISTINCT images.*-->
+        <!--FROM images-->
+        <!--inner JOIN image_keywords ON images.id = image_keywords.id-->
+        <!--<where>-->
+            <!--<if test="sList.pattern!=null">-->
+                <!--images.pattern = #{sList.pattern}-->
+            <!--</if>-->
+            <!--<if test="sList.cateList.size()>0">-->
+                <!--and images.cates in-->
+                <!--<foreach collection="sList.cateList" item="cate" open="(" separator="," close=")">-->
+                    <!--#{cate}-->
+                <!--</foreach>-->
+            <!--</if>-->
+            <!--<if test="sList.keyword!=null">-->
+                <!--and image_keywords.keyword like concat('%',#{sList.keyword},'%')-->
+            <!--</if>-->
+        <!--</where>-->
+        <!--order by images.add_time ${sList.seq}-->
+    <!--</select>-->
+
+    <!--搜索结果集合，一张图片一个用户信息-->
+    <resultMap id="seachResult" type="com.jeleren.bean.ImageResult">
+        <association property="user" javaType="com.jeleren.bean.UserInfo">
+            <id property="id" column="id"/>
+            <result property="image" column="user_image"/>
+            <result property="username" column="username"/>
+            <result property="upload_num" column="upload_num"/>
+            <result property="fan_num" column="fan_num"/>
+            <result property="download_num" column="download_num"/>
+            <result property="description" column="u_description"/>
+        </association>
+        <association property="image" javaType="com.jeleren.bean.ImageInfo" >
+            <id property="id" column="image_id"/>
+            <result property="image" column="image"/>
+            <result property="name" column="name"/>
+            <result property="keywords" column="keywords"/>
+            <result property="cates" column="cates"/>
+            <result property="description" column="description"/>
+            <result property="add_time" column="add_time"/>
+            <result property="like_num" column="like_num"/>
+            <result property="collect_num" column="collect_num"/>
+            <result property="if_active" column="if_active"/>
+        </association>
+    </resultMap>
+
+    <select id="searchImage" resultMap="seachResult">
+        SELECT DISTINCT images.id AS image_id,
+        images.image,
+        images.name,
+        images.cates,
+        images.description,
+        images.keywords,
+        images.pre_image,
+        images.if_active,
+        images.add_time,
+        images.like_num,
+        images.collect_num,
+        images.user_id,
+
+        u.username,
+        u.image AS user_image,
+        u.fan_num,
+        u.follow_num,
+        u.upload_num,
+        u.download_num,
+        u.description as u_description
         FROM images
-        inner JOIN image_keywords ON images.id = image_keywords.id
+        inner JOIN image_keyword ON images.id = image_keyword.image_id
+        inner join userinfo u on images.user_id = u.id
         <where>
             <if test="sList.pattern!=null">
                 images.pattern = #{sList.pattern}
@@ -26,7 +92,7 @@
                 </foreach>
             </if>
             <if test="sList.keyword!=null">
-                and image_keywords.keyword like concat('%',#{sList.keyword},'%')
+                and image_keyword.keyword like concat('%',#{sList.keyword},'%')
             </if>
         </where>
         order by images.add_time ${sList.seq}
@@ -98,13 +164,91 @@
         where id = #{image}
     </update>
 
-    <!--获得用户上传的图片-->
-    <select id="getUserImages" parameterType="int" resultType="com.jeleren.bean.ImageInfo">
-        SELECT * FROM images WHERE user_id = #{uid}
+
+    <!--
+        下面这个 resumap 包括了所有的属性
+        用于获得图片和用户信息，主要用于根据用户id搜索图片
+        和 用于根据不同的状态搜索
+    -->
+
+    <resultMap id="imageAndUserResult" type="com.jeleren.bean.ImageAndUserResult">
+        <association property="user" javaType="com.jeleren.bean.UserInfo">
+            <id property="id" column="id"/>
+            <result property="image" column="user_image"/>
+            <result property="username" column="username"/>
+            <result property="upload_num" column="upload_num"/>
+            <result property="fan_num" column="fan_num"/>
+            <result property="download_num" column="download_num"/>
+            <result property="description" column="u_description"/>
+        </association>
+        <collection property="imageInfos" javaType="list" ofType="com.jeleren.bean.ImageInfo">
+            <id property="id" column="image_id"/>
+            <result property="image" column="image"/>
+            <result property="name" column="name"/>
+            <result property="keywords" column="keywords"/>
+            <result property="cates" column="cates"/>
+            <result property="description" column="description"/>
+            <result property="add_time" column="add_time"/>
+            <result property="like_num" column="like_num"/>
+            <result property="collect_num" column="collect_num"/>
+            <result property="if_active" column="if_active"/>
+        </collection>
+    </resultMap>
+
+    <!--获得用户id上传的图片-->
+    <select id="getUserImages" parameterType="int" resultMap="imageAndUserResult">
+           SELECT  images.id AS image_id,
+        images.image,
+        images.name,
+        images.cates,
+        images.description,
+        images.keywords,
+        images.pre_image,
+        images.if_active,
+        images.add_time,
+        images.like_num,
+        images.collect_num,
+        images.user_id,
+
+        u.username,
+        u.image AS user_image,
+        u.fan_num,
+        u.follow_num,
+        u.upload_num,
+        u.download_num,
+        u.description as u_description
+
+        FROM images
+        INNER JOIN userinfo u ON u.id=images.user_id WHERE u.id = #{uid}
     </select>
 
-    <!--根据状态获得图片-->
-    <select id="getImagesByActive"  resultType="com.jeleren.bean.ImageInfo">
-        SELECT * FROM images WHERE user_id = #{uid} AND if_active = #{if_active}
+    <!--根据不同的状态得到用户的图片-->
+    <select id="getImagesByActive"  resultMap="imageAndUserResult">
+      SELECT  images.id AS image_id,
+        images.image,
+        images.name,
+        images.cates,
+        images.description,
+        images.keywords,
+        images.pre_image,
+        images.if_active,
+        images.add_time,
+        images.like_num,
+        images.collect_num,
+        images.user_id,
+
+        u.username,
+        u.image AS user_image,
+        u.fan_num,
+        u.follow_num,
+        u.upload_num,
+        u.download_num,
+        u.description as u_description
+
+        FROM images
+        INNER JOIN userinfo u ON u.id=images.user_id WHERE if_active = #{if_active} AND u.id = #{uid}
     </select>
+
+
+
 </mapper>

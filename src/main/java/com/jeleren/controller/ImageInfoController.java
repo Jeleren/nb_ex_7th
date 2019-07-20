@@ -1,38 +1,29 @@
 package com.jeleren.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.jeleren.bean.ImageInfo;
-import com.jeleren.bean.SearchList;
-import com.jeleren.dao.IUserInfoDao;
+import com.jeleren.bean.*;
 import com.jeleren.service.IGroupService;
-import com.jeleren.bean.ImageLike;
 import com.jeleren.service.IImageInfoService;
-import com.jeleren.service.IUserInfoService;
 import com.jeleren.service.IImageLikeService;
+import com.jeleren.service.IUserInfoService;
 import com.jeleren.utils.ResponseData;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ClassName: ImageInfoController <br/>
  * Description: <br/>
  * date: 2019/7/17 22:07<br/>
  *
- * @author a8243<br />
+ * @author a8243<br       />
  * @since JDK 1.8
  */
 @RestController
@@ -59,10 +50,11 @@ public class ImageInfoController {
         String imgPath = null;//装配后的图片地址
         if (imageFile != null && !imageFile.isEmpty()) {
             //使用时间戳给图片重命名
-//            String url = request.getSession().getServletContext().getRealPath("/").split("\\\\target")[0] + "/src/main/webapp/images/";
+//            String url = request.getSession().getServletContext().getRealPath("/").split("\\\\target")[0] +
+// "/src/main/webapp/images/";
             String url = request.getSession().getServletContext().getRealPath("/images/");
             File file = new File(url);
-            if(!file.isDirectory()){
+            if (!file.isDirectory()) {
                 file.mkdir();
             }
 
@@ -90,7 +82,7 @@ public class ImageInfoController {
             int image_id = imageInfo.getId();
             groupService.addIGR(image_cate, image_id);
             String keywords[] = imageInfo.getKeywords().split(" ");
-            for(String keyword: keywords){
+            for (String keyword : keywords) {
                 groupService.addIKR(keyword, image_id);
             }
             userInfoService.updateUploadNum(imageInfo.getUser_id());
@@ -102,12 +94,20 @@ public class ImageInfoController {
 
     @RequestMapping(value = "/searchImage", method = RequestMethod.POST)
     @ResponseBody
-    public List searchImage(ImageInfo imageInfo, HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
+    public List<ImageResult> searchImage(HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
         String keyword = httpServletRequest.getParameter("keyword");
         String cates = httpServletRequest.getParameter("-cates");
         String seq = httpServletRequest.getParameter("order");
-        int page = Integer.parseInt(httpServletRequest.getParameter("page"));
-        int size = Integer.parseInt(httpServletRequest.getParameter("size"));
+        String temp =  httpServletRequest.getParameter("page");
+        int page;
+        int size;
+        if (temp != null) {
+            page = Integer.parseInt(temp.toString());
+        } else {
+            page = 1;
+        }
+        size = 16;
+
 //        PageHelper.startPage(page, num);
         /*
         这个地方，逻辑处理需要严谨
@@ -129,39 +129,52 @@ public class ImageInfoController {
         searchList.setPattern(pattern);
         searchList.setPage(page);
         searchList.setSize(size);
-        if (seq.equals("-")) {
+        if (seq != null && seq.equals("-")) {
             searchList.setSeq("DESC");
         } else {
             searchList.setSeq("ASC");
         }
-        List<ImageInfo> imageInfo1 = iImageInfoService.searchImage(searchList);
+        List<ImageResult> imageInfo1 = iImageInfoService.searchImage(searchList);
 
         return imageInfo1;
     }
 
-    //获得不同状态的图片
-    @RequestMapping(value = "/getImagesByActive", method = RequestMethod.POST)
-    @ResponseBody
-    public List<ImageInfo> getImagesByActive(HttpServletRequest request, HttpServletResponse response) {
+    //获得不同状态的图片,测试完毕ok
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public List<ImageAndUserResult> getImagesByActive(HttpServletRequest request, HttpServletResponse response) {
         //假设用户id 为 1，这个地方的id可以通过token 获得
         int uid = 1;
         int page = Integer.parseInt(request.getParameter("page"));
         int size = Integer.parseInt(request.getParameter("size"));
         int if_active = Integer.parseInt(request.getParameter("if_active"));
-        List<ImageInfo> imageInfos = iImageInfoService.getImagesByActive(uid,page,size,if_active);
+        List<ImageAndUserResult> imageInfos = iImageInfoService.getImagesByActive(uid, page, size, if_active);
 
-        return  imageInfos;
+        return imageInfos;
     }
 
     //获得用户上传的图片
-    @RequestMapping(value = "/getUserImages", method = RequestMethod.POST)
+    @RequestMapping(value = "/user2", method = RequestMethod.GET)
     @ResponseBody
-    public List<ImageInfo> getUserImages(HttpServletRequest request) {
+    public List<ImageAndUserResult> getUserImages(HttpServletRequest request) {
         //假设用户id 为 1，这个地方的id可以通过token 获得
-        int uid = 1;
-        int page = Integer.parseInt(request.getParameter("page"));
-        int size = Integer.parseInt(request.getParameter("size"));
-        List<ImageInfo> imageInfos = iImageInfoService.getUserImages(uid,page,size);
+        int uid;
+        String tmp = null;
+//        String tmp = request.getAttribute("user_id").toString();
+        if (tmp != null) {
+            uid = Integer.parseInt(tmp);
+        } else {
+            uid = 1;
+        }
+        tmp = request.getParameter("page");
+        int page;
+        if (tmp != null) {
+            page = Integer.parseInt(tmp);
+        } else {
+            page = 1;
+        }
+
+        int size = 16;
+        List<ImageAndUserResult> imageInfos = iImageInfoService.getUserImages(uid, page, size);
         return imageInfos;
     }
 
@@ -188,8 +201,11 @@ public class ImageInfoController {
     }
 
     @GetMapping("/group/{group_id}")
-    public Map getMainImage(HttpServletRequest request, @PathVariable(name = "group_id", required = true) int group_id, @RequestParam("page") int page, @RequestParam("num") int num) {
-//        iImageInfoService.getMainImage(Integer.parseInt((String)request.getAttribute("user_id")), group_id, page, num);
+    public Map getMainImage(HttpServletRequest request,
+                            @PathVariable(name = "group_id", required = true) int group_id,
+                            @RequestParam("page") int page, @RequestParam("num") int num) {
+//        iImageInfoService.getMainImage(Integer.parseInt((String)request.getAttribute("user_id")), group_id, page,
+// num);
         Map<String, Object> m = new HashMap<>();
         int user_id = Integer.parseInt(request.getAttribute("user_id").toString());
         m.put("result", iImageInfoService.getMainImage(user_id, group_id, page, num));
@@ -197,9 +213,11 @@ public class ImageInfoController {
     }
 
     @GetMapping("{image_id}")
-    public Map getImageInfo(HttpServletRequest request, @PathVariable(name = "image_id", required = true) int image_id){
+    public Map getImageInfo(HttpServletRequest request,
+                            @PathVariable(name = "image_id", required = true) int image_id) {
         Map<String, Object> m = new HashMap<>();
-        m.put("result", iImageInfoService.getImageInfo(image_id, Integer.parseInt(request.getAttribute("user_id").toString())));
+        m.put("result", iImageInfoService.getImageInfo(image_id,
+                Integer.parseInt(request.getAttribute("user_id").toString())));
         return m;
     }
 

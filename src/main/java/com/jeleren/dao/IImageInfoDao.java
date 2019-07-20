@@ -1,17 +1,13 @@
 package com.jeleren.dao;
 
+import com.jeleren.bean.ImageAndUserResult;
 import com.jeleren.bean.ImageInfo;
 import com.jeleren.bean.ImageResult;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-import java.util.Map;
+
 import com.jeleren.bean.SearchList;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * ClassName: IImageInfoDao <br/>
@@ -22,19 +18,19 @@ import org.apache.ibatis.annotations.Param;
  * @since JDK 1.8
  */
 public interface IImageInfoDao {
-    int add(ImageInfo imageInfo);
+//    int add(ImageInfo imageInfo);
 
     List<ImageResult> getMainImage(@Param("user_id") int user_id, @Param("group_id") int group_id);
 
     ImageResult getImageInfo(@Param("image_id") int image_id, @Param("user_id") int user_id);
-    void add(ImageInfo imageInfo);
-    List<ImageInfo> searchImage(@Param("sList") SearchList searchList);
+    int add(ImageInfo imageInfo);
+    List<ImageResult> searchImage(@Param("sList") SearchList searchList);
 
 
     //修改点赞数目
     boolean editImageLikeNum(@Param("image") int image, @Param("record") String record);
     //获得用户上传的所有图片
-     List<ImageInfo> getUserImages(int uid);
+     List<ImageAndUserResult> getUserImages(int uid);
      // 根据状态获得图片
-     List<ImageInfo>  getImagesByActive(@Param("uid") int uid,@Param("if_active") int if_active);
+     List<ImageAndUserResult>  getImagesByActive(@Param("uid") int uid, @Param("if_active") int if_active);
 }

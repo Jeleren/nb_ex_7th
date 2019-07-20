@@ -1,6 +1,7 @@
 package com.jeleren.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.jeleren.bean.ImageAndUserResult;
 import com.jeleren.bean.ImageInfo;
 import com.jeleren.bean.ImageResult;
 import com.jeleren.bean.SearchList;
@@ -26,8 +27,8 @@ public class ImageInfoServiceImpl implements IImageInfoService {
     private IImageInfoDao iImageInfoDao;
 
     @Override
-    public int add(ImageInfo imageInfo) {
-        return iImageInfoDao.add(imageInfo);
+    public void add(ImageInfo imageInfo) {
+         iImageInfoDao.add(imageInfo);
     }
 
     @Override
@@ -38,26 +39,26 @@ public class ImageInfoServiceImpl implements IImageInfoService {
     }
 
     @Override
-    public ImageResult getImageInfo(int image_id, int user_id) {
+    public Object getImageInfo(int image_id, int user_id) {
         return iImageInfoDao.getImageInfo(image_id, user_id);
     }
 
     @Override
-    public List<ImageInfo> searchImage(SearchList searchList) {
+    public List<ImageResult> searchImage(SearchList searchList) {
         PageHelper.startPage(searchList.getPage(), searchList.getSize());
         return iImageInfoDao.searchImage(searchList);
     }
 
     @Override
-    public List<ImageInfo> getUserImages(int uid,int page,int size) {
+    public List<ImageAndUserResult> getUserImages(int uid,int page,int size) {
         PageHelper.startPage(page,size);
         return iImageInfoDao.getUserImages(uid);
     }
 
     @Override
-    public List<ImageInfo> getImagesByActive(int uid, int page, int size, int if_active) {
+    public List<ImageAndUserResult> getImagesByActive(int uid, int page, int size, int if_active) {
 //        star
-        List<ImageInfo> imageInfos = iImageInfoDao.getImagesByActive(uid, if_active);
+        List<ImageAndUserResult> imageInfos = iImageInfoDao.getImagesByActive(uid, if_active);
         PageHelper.startPage(page,size);
         return  imageInfos;
     }
