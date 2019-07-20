@@ -22,4 +22,8 @@ public interface IImageInfoDao {
 
     //修改点赞数目
     boolean editImageLikeNum(@Param("image") int image, @Param("record") String record);
+    //获得用户上传的所有图片
+     List<ImageInfo> getUserImages(int uid);
+     // 根据状态获得图片
+     List<ImageInfo>  getImagesByActive(@Param("uid") int uid,@Param("if_active") int if_active);
 }

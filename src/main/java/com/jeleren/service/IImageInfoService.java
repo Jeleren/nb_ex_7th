@@ -16,4 +16,6 @@ import java.util.List;
 public interface IImageInfoService {
     void add(ImageInfo imageInfo);
     List<ImageInfo> searchImage(SearchList searchList);
+    List<ImageInfo> getUserImages(int uid,int page,int size);
+    List<ImageInfo> getImagesByActive(int uid,int page,int size,int if_active);
 }

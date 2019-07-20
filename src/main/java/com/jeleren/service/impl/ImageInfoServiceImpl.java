@@ -15,7 +15,7 @@ import java.util.List;
  * Description: <br/>
  * date: 2019/7/17 22:11<br/>
  *
- * @author a8243<br />
+ * @author a8243<br   />
  * @since JDK 1.8
  */
 @Service
@@ -30,8 +30,22 @@ public class ImageInfoServiceImpl implements IImageInfoService {
     }
 
     @Override
-    public List<ImageInfo> searchImage(SearchList searchList){
-        PageHelper.startPage(searchList.getPage(),searchList.getSize());
+    public List<ImageInfo> searchImage(SearchList searchList) {
+        PageHelper.startPage(searchList.getPage(), searchList.getSize());
         return iImageInfoDao.searchImage(searchList);
+    }
+
+    @Override
+    public List<ImageInfo> getUserImages(int uid,int page,int size) {
+        PageHelper.startPage(page,size);
+        return iImageInfoDao.getUserImages(uid);
+    }
+
+    @Override
+    public List<ImageInfo> getImagesByActive(int uid, int page, int size, int if_active) {
+//        star
+        List<ImageInfo> imageInfos = iImageInfoDao.getImagesByActive(uid, if_active);
+        PageHelper.startPage(page,size);
+        return  imageInfos;
     }
 }
