@@ -47,6 +47,6 @@
     </update>
 
     <update id="updateUploadNum" parameterType="int">
-        update userinfo set upload_num = upload_num++ where id = #{user_id}
+        update userinfo set upload_num = upload_num + 1 where id = #{user_id}
     </update>
 </mapper>

@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jeleren.dao.IImageInfoDao">
+    <insert id="add" parameterType="com.jeleren.bean.ImageInfo"  useGeneratedKeys="true"  keyProperty="id">
+      insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num, pattern
+      ) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0, #{pattern})
+        <!--<selectKey keyProperty="id" resultType="int" >-->
+            <!--SELECT @@IDENTITY AS ID-->
+        <!--</selectKey>-->
+  </insert>
     <insert id="add" parameterType="com.jeleren.bean.ImageInfo">
             insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0)
     </insert>
@@ -25,6 +32,61 @@
         order by images.add_time ${sList.seq}
     </select>
 
+    <resultMap id="imageResult" type="com.jeleren.bean.ImageResult">
+        <!--<id property="id" column="id"/>-->
+        <result property="if_like" column="rela_id"/>
+        <result property="if_follow"  column="id"/>
+        <association property="user" javaType="com.jeleren.bean.UserInfo">
+            <id property="id" column="id"/>
+            <result property="image" column="user_image"/>
+            <result property="username" column="username"/>
+            <result property="upload_num" column="upload_num"/>
+            <result property="fan_num" column="fan_num"/>
+        </association>
+        <association property="image" javaType="com.jeleren.bean.ImageInfo">
+            <id property="id" column="image_id"/>
+            <result property="image" column="image"/>
+            <result property="name" column="name"/>
+            <result property="keywords" column="keywords"/>
+        </association>
+    </resultMap>
+    <select id="getMainImage" parameterType="int" resultMap="imageResult">
+        select images.image,
+        images.name,
+        images.keywords,
+        images.id as image_id,
+        u.image as user_image,
+        u.username,
+        u.upload_num,
+        u.fan_num,
+        uil.rela_id,
+        ur.id
+        from images
+        inner join image_group ig on images.id=ig.image_id
+        inner join userinfo u on u.id=images.user_id
+        left join user_image_like uil on uil.image_id=images.id and uil.user_id = #{user_id}
+        left join user_rela ur on ur.user_id = u.id and ur.fan_id = #{user_id}
+        where ig.group_id = #{group_id}
+    </select>
+
+    <select id="getImageInfo" parameterType="int" resultMap="imageResult">
+        select images.image,
+        images.name,
+        images.keywords,
+        images.id as image_id,
+        u.image as user_image,
+        u.username,
+        u.upload_num,
+        u.fan_num,
+        uil.rela_id,
+        ur.id
+        from images
+--         inner join image_group ig on images.id = ig.image_id
+        inner join userinfo u on u.id=images.user_id
+        left join user_image_like uil on uil.image_id=images.id and uil.user_id = #{user_id}
+        left join user_rela ur on ur.user_id = u.id and ur.fan_id = #{user_id}
+        where images.id = #{image_id}
+    </select>
     <update id="editImageLikeNum">
         update images set
         <if test="record == 'delete'">

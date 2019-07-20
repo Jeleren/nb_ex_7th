@@ -14,4 +14,6 @@ public interface IUserInfoService {
     int register (UserInfo userInfo);
 
     UserInfo findUserByUsername (String username);
+
+    void updateUploadNum(int user_id);
 }
