@@ -1,13 +1,14 @@
 package com.jeleren.controller;
 
+import com.github.pagehelper.PageHelper;
 import com.jeleren.bean.ImageInfo;
-import com.jeleren.bean.ImageLike;
 import com.jeleren.bean.SearchList;
+import com.jeleren.bean.ImageLike;
 import com.jeleren.service.IImageInfoService;
 import com.jeleren.service.IImageLikeService;
 import com.jeleren.utils.ResponseData;
-import com.sun.deploy.net.HttpResponse;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,22 +16,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Date;
 
 /**
  * ClassName: ImageInfoController <br/>
  * Description: <br/>
  * date: 2019/7/17 22:07<br/>
  *
- * @author a8243<br   />
+ * @author a8243<br />
  * @since JDK 1.8
  */
 @RestController
@@ -52,10 +51,9 @@ public class ImageInfoController {
         String imgPath = null;//装配后的图片地址
         if (imageFile != null && !imageFile.isEmpty()) {
             //使用时间戳给图片重命名
-            String url = request.getSession().getServletContext().getRealPath("/").split("\\\\target")[0] + "/src" +
-                    "/main/webapp/images/";
+            String url = request.getSession().getServletContext().getRealPath("/").split("\\\\target")[0] + "/src/main/webapp/images/";
             File file = new File(url);
-            if (!file.isDirectory()) {
+            if(!file.isDirectory()){
                 file.mkdir();
             }
 
