@@ -1,6 +1,12 @@
 package com.jeleren.dao;
 
 import com.jeleren.bean.ImageInfo;
+import com.jeleren.bean.ImageResult;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+import java.util.Map;
 import com.jeleren.bean.SearchList;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,6 +22,11 @@ import org.apache.ibatis.annotations.Param;
  * @since JDK 1.8
  */
 public interface IImageInfoDao {
+    int add(ImageInfo imageInfo);
+
+    List<ImageResult> getMainImage(@Param("user_id") int user_id, @Param("group_id") int group_id);
+
+    ImageResult getImageInfo(@Param("image_id") int image_id, @Param("user_id") int user_id);
     void add(ImageInfo imageInfo);
     List<ImageInfo> searchImage(@Param("sList") SearchList searchList);
 

@@ -49,4 +49,9 @@ public class UserInfoServiceImpl implements IUserInfoService {
     public UserInfo findUserByUsername(String username) {
         return userInfoDao.findUserByUsername(username);
     }
+
+    @Override
+    public void updateUploadNum(int user_id) {
+        userInfoDao.updateUploadNum(user_id);
+    }
 }

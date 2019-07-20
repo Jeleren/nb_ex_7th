@@ -2,6 +2,7 @@ package com.jeleren.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.jeleren.bean.ImageInfo;
+import com.jeleren.bean.ImageResult;
 import com.jeleren.bean.SearchList;
 import com.jeleren.dao.IImageInfoDao;
 import com.jeleren.service.IImageInfoService;
@@ -25,8 +26,20 @@ public class ImageInfoServiceImpl implements IImageInfoService {
     private IImageInfoDao iImageInfoDao;
 
     @Override
-    public void add(ImageInfo imageInfo) {
-        iImageInfoDao.add(imageInfo);
+    public int add(ImageInfo imageInfo) {
+        return iImageInfoDao.add(imageInfo);
+    }
+
+    @Override
+    public List<ImageResult> getMainImage(int user_id, int group_id, int page, int num) {
+        PageHelper.startPage(page, num);
+        List<ImageResult> a = iImageInfoDao.getMainImage(user_id, group_id);
+        return a;
+    }
+
+    @Override
+    public ImageResult getImageInfo(int image_id, int user_id) {
+        return iImageInfoDao.getImageInfo(image_id, user_id);
     }
 
     @Override

@@ -4,10 +4,24 @@
     <select id="getGroupByLevel"  resultType="com.jeleren.bean.Group">
         select * from groups where level = #{level} and if_show = 1
     </select>
-    <select id="getGroupById" resultType="com.jeleren.bean.Group">
+    <select id="getGroupByPId" resultType="com.jeleren.bean.Group">
         select * from groups where parent_id = #{parent_id} and if_show = 1
     </select>
 
+    <select id="getGroupByName" parameterType="String" resultType="com.jeleren.bean.Group">
+        select * from groups where name = #{name}
+    </select>
 
+    <!-- 通过 parent_id 获取 上级分类的id-->
+    <select id="getGroupById" parameterType="int" resultType="int">
+        select parent_id from groups where id = #{id}
+    </select>
 
+    <insert id="addIGRela" parameterType="int">
+        insert into image_group (image_id, group_id) value (#{image_id}, #{group_id})
+    </insert>
+
+    <insert id="addIKR">
+        insert into image_keyword (keyword, image_id) value(#{keyword}, #{image_id})
+    </insert>
 </mapper>
