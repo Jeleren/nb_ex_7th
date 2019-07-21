@@ -7,6 +7,8 @@ import com.jeleren.bean.ImageResult;
 import java.util.List;
 import com.jeleren.bean.SearchList;
 
+import java.util.List;
+
 /**
  * ClassName: IImageInfoService <br/>
  * Description: <br/>
@@ -16,11 +18,10 @@ import com.jeleren.bean.SearchList;
  * @since JDK 1.8
  */
 public interface IImageInfoService {
-//    int add(ImageInfo imageInfo);
+    int add(ImageInfo imageInfo);
     List<ImageResult> getMainImage(int user_id, int group_id, int page, int num);
 
-    Object getImageInfo(int image_id, int user_id);
-    void add(ImageInfo imageInfo);
+    ImageResult getImageInfo(int image_id, int user_id);
     List<ImageResult> searchImage(SearchList searchList);
     List<ImageAndUserResult> getUserImages(int uid, int page, int size);
     List<ImageAndUserResult> getImagesByActive(int uid,int page,int size,int if_active);

@@ -4,10 +4,15 @@ import com.jeleren.bean.ImageAndUserResult;
 import com.jeleren.bean.ImageInfo;
 import com.jeleren.bean.ImageResult;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-
+import java.util.Map;
 import com.jeleren.bean.SearchList;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * ClassName: IImageInfoDao <br/>
@@ -18,12 +23,12 @@ import com.jeleren.bean.SearchList;
  * @since JDK 1.8
  */
 public interface IImageInfoDao {
-//    int add(ImageInfo imageInfo);
+    int add(ImageInfo imageInfo);
 
     List<ImageResult> getMainImage(@Param("user_id") int user_id, @Param("group_id") int group_id);
 
     ImageResult getImageInfo(@Param("image_id") int image_id, @Param("user_id") int user_id);
-    int add(ImageInfo imageInfo);
+//    List<ImageInfo> searchImage(@Param("sList") SearchList searchList);
     List<ImageResult> searchImage(@Param("sList") SearchList searchList);
 
 

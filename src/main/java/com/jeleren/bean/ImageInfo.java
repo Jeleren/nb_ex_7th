@@ -42,14 +42,6 @@ public class ImageInfo {
         keywords="";
     }
 
-    public String getPattern() {
-        return pattern;
-    }
-
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
-    }
-
     public Date getAdd_time() {
         return add_time;
     }
@@ -152,5 +144,13 @@ public class ImageInfo {
 
     public void setCollect_num(int collect_num) {
         this.collect_num = collect_num;
+    }
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
     }
 }
