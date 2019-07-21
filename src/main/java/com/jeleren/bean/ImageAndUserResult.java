@@ -5,6 +5,15 @@ import java.util.List;
 public class ImageAndUserResult {
     private List<ImageInfo > imageInfos;
     private UserInfo user;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public List<ImageInfo> getImageInfos() {
         return imageInfos;

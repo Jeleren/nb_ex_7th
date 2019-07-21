@@ -6,6 +6,15 @@ public class ImageResult {
     private Integer if_like;
 //    private int if_collect;
     private Integer if_follow;
+    private  int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {

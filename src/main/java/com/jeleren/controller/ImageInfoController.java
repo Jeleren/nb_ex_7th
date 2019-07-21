@@ -23,7 +23,7 @@ import java.util.*;
  * Description: <br/>
  * date: 2019/7/17 22:07<br/>
  *
- * @author a8243<br       />
+ * @author a8243<br               />
  * @since JDK 1.8
  */
 @RestController
@@ -98,11 +98,11 @@ public class ImageInfoController {
         String keyword = httpServletRequest.getParameter("keyword");
         String cates = httpServletRequest.getParameter("-cates");
         String seq = httpServletRequest.getParameter("order");
-        String temp =  httpServletRequest.getParameter("page");
+        String temp = httpServletRequest.getParameter("page");
         int page;
         int size;
-        if (temp != null) {
-            page = Integer.parseInt(temp.toString());
+        if (temp != null && !temp.equals("")) {
+            page = Integer.parseInt(temp);
         } else {
             page = 1;
         }
@@ -160,14 +160,14 @@ public class ImageInfoController {
         int uid;
         String tmp = null;
 //        String tmp = request.getAttribute("user_id").toString();
-        if (tmp != null) {
+        if (tmp != null && !tmp.equals("")) {
             uid = Integer.parseInt(tmp);
         } else {
             uid = 1;
         }
         tmp = request.getParameter("page");
         int page;
-        if (tmp != null) {
+        if (tmp != null && !tmp.equals("")) {
             page = Integer.parseInt(tmp);
         } else {
             page = 1;
