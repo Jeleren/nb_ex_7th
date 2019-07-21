@@ -7,6 +7,16 @@ public class ImageAndUserResult {
     private UserInfo user;
     private int id;
 
+    private int count;
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
     public int getId() {
         return id;
     }

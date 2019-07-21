@@ -23,7 +23,7 @@ import java.util.*;
  * Description: <br/>
  * date: 2019/7/17 22:07<br/>
  *
- * @author a8243<br               />
+ * @author a8243<br                                                               />
  * @since JDK 1.8
  */
 @RestController
@@ -90,9 +90,10 @@ public class ImageInfoController {
         return res;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public List<ImageResult> searchImage(HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
+        httpServletRequest.setCharacterEncoding("UTF-8");
         String keyword = httpServletRequest.getParameter("search");
         String cates = httpServletRequest.getParameter("-cates");
         String seq = httpServletRequest.getParameter("order");
@@ -141,10 +142,32 @@ public class ImageInfoController {
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public List<ImageAndUserResult> getImagesByActive(HttpServletRequest request, HttpServletResponse response) {
         //假设用户id 为 1，这个地方的id可以通过token 获得
-        int uid = 1;
-        int page = Integer.parseInt(request.getParameter("page"));
-        int size = Integer.parseInt(request.getParameter("size"));
-        int if_active = Integer.parseInt(request.getParameter("if_active"));
+        int uid,page,size,if_active;
+        try {
+            uid = 1;
+        } catch (Exception e) {
+            uid = 1;
+            e.printStackTrace();
+        }
+        try {
+            page = Integer.parseInt(request.getParameter("page"));
+        }catch (Exception e){
+            e.printStackTrace();
+            page = 1;
+        }
+        try {
+            size = Integer.parseInt(request.getParameter("size"));
+        }catch (Exception e){
+            e.printStackTrace();
+            size = 16;
+        }
+        try {
+            if_active = Integer.parseInt(request.getParameter("if_active"));
+        }catch (Exception e){
+            e.printStackTrace();
+            if_active = 1;
+        }
+
         List<ImageAndUserResult> imageInfos = iImageInfoService.getImagesByActive(uid, page, size, if_active);
 
         return imageInfos;
@@ -174,6 +197,13 @@ public class ImageInfoController {
         int size = 16;
         List<ImageAndUserResult> imageInfos = iImageInfoService.getUserImages(uid, page, size);
         return imageInfos;
+    }
+
+    //得到各种状态图片的个数
+    @RequestMapping(value = "image_num", method = RequestMethod.GET)
+    public List getActiveNum() {
+        List<Integer> activeNumList = iImageInfoService.getActiveNum();
+        return activeNumList;
     }
 
     //图片点赞或取消点赞

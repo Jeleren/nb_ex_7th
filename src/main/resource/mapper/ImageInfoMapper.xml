@@ -96,8 +96,8 @@
                 </foreach>
             </if>
             <if test="sList.keyword!=null">
-                and (image_keyword.keyword like concat('%',#{sList.keyword},'%')
-                or images.description like concat('%',#{sList.keyword},'%') )
+                and ( image_keyword.keyword like concat('%',#{sList.keyword},'%') or
+                images.description like concat('%',#{sList.keyword},'%') )
             </if>
         </where>
         order by images.add_time ${sList.seq}
@@ -254,6 +254,13 @@
         INNER JOIN userinfo u ON u.id=images.user_id WHERE if_active = #{if_active} AND u.id = #{uid}
     </select>
 
+    <!--通过图片的active得到其数量-->
+    <select id="getActiveNum" parameterType="_int" resultType="_int">
+        SELECT
+        COUNT(if_active)
+        FROM images
+        WHERE if_active = #{active_id}
+    </select>
 
 
 </mapper>

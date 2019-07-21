@@ -25,4 +25,5 @@ public interface IImageInfoService {
     List<ImageResult> searchImage(SearchList searchList);
     List<ImageAndUserResult> getUserImages(int uid, int page, int size);
     List<ImageAndUserResult> getImagesByActive(int uid,int page,int size,int if_active);
+    List<Integer> getActiveNum();
 }

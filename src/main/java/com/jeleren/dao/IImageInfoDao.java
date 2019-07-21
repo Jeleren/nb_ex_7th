@@ -38,4 +38,6 @@ public interface IImageInfoDao {
      List<ImageAndUserResult> getUserImages(int uid);
      // 根据状态获得图片
      List<ImageAndUserResult>  getImagesByActive(@Param("uid") int uid, @Param("if_active") int if_active);
+
+     int getActiveNum(int active_id);
 }
