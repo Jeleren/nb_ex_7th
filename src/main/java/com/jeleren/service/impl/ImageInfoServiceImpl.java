@@ -44,8 +44,15 @@ public class ImageInfoServiceImpl implements IImageInfoService {
 
     @Override
     public List<ImageResult> searchImage(SearchList searchList) {
+        List<ImageResult>  imageResults = iImageInfoDao.searchImage(searchList);
+        int count = imageResults.size();
+        for(int i = 0;i<count;i++){
+            imageResults.get(i).setCount(count);
+        }
+//        imageResults.set
         PageHelper.startPage(searchList.getPage(), searchList.getSize());
-        return iImageInfoDao.searchImage(searchList);
+
+        return imageResults;
     }
 
     @Override

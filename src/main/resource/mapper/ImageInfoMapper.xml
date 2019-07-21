@@ -80,6 +80,7 @@
         u.upload_num,
         u.download_num,
         u.description as u_description
+
         FROM images
         inner JOIN image_keyword ON images.id = image_keyword.image_id
         inner join userinfo u on images.user_id = u.id
