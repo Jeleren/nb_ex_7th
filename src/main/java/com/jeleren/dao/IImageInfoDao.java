@@ -1,14 +1,12 @@
 package com.jeleren.dao;
 
-import com.jeleren.bean.ImageAndUserResult;
-import com.jeleren.bean.ImageInfo;
-import com.jeleren.bean.ImageResult;
+import com.jeleren.bean.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Map;
-import com.jeleren.bean.SearchList;
+
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -37,7 +35,7 @@ public interface IImageInfoDao {
     //修改点赞数目
     boolean editImageLikeNum(@Param("image") int image, @Param("record") String record);
     //获得用户上传的所有图片
-    List<ImageAndUserResult> getUserImages(int uid);
+    List<ImageResult> getUserImages(int uid);
 
     // 根据状态获得图片
     List<ImageAndUserResult> getImagesByActive(@Param("uid") int uid, @Param("if_active") int if_active);
