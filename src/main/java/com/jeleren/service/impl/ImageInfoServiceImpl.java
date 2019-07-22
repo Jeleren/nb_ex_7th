@@ -1,10 +1,7 @@
 package com.jeleren.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.jeleren.bean.ImageAndUserResult;
-import com.jeleren.bean.ImageInfo;
-import com.jeleren.bean.ImageResult;
-import com.jeleren.bean.SearchList;
+import com.jeleren.bean.*;
 import com.jeleren.dao.IImageInfoDao;
 import com.jeleren.service.IImageInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +15,7 @@ import java.util.List;
  * Description: <br/>
  * date: 2019/7/17 22:11<br/>
  *
- * @author a8243<br       />
+ * @author a8243<br                               />
  * @since JDK 1.8
  */
 @Service
@@ -58,7 +55,7 @@ public class ImageInfoServiceImpl implements IImageInfoService {
 
     @Override
     public List<ImageAndUserResult> getUserImages(int uid, int page, int size) {
-        List<ImageAndUserResult> imageInfos =  iImageInfoDao.getUserImages(uid);
+        List<ImageAndUserResult> imageInfos = iImageInfoDao.getUserImages(uid);
         int count;
         if (imageInfos.size() > 0) {
             count = imageInfos.get(0).getImageInfos().size();
@@ -102,4 +99,20 @@ public class ImageInfoServiceImpl implements IImageInfoService {
 
         return listResult;
     }
+
+    @Override
+    public List<CollectionInfo> getCollectionInfo(int uid) {
+        List<CollectionInfo> collectionInfos = iImageInfoDao.getCollectionInfo(uid);
+        for (int i = 0; i < collectionInfos.size(); i++) {
+            int num = collectionInfos.get(i).getImageInfos().size();
+            List<ImageInfo> imageInfos = collectionInfos.get(i).getImageInfos();
+            if (num > 6) {
+                imageInfos = imageInfos.subList(0,6);
+            }
+            collectionInfos.get(i).setNum(num);
+        }
+        return collectionInfos;
+    }
+
+
 }

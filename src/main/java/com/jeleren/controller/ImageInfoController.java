@@ -206,6 +206,24 @@ public class ImageInfoController {
         return activeNumList;
     }
 
+    // 获得集合所有的信息 测试完成
+    @RequestMapping(value = "/collect", method =RequestMethod.GET)
+//    @ResponseBody
+    public ResponseData getCollectionInfo(HttpServletRequest request){
+        int uid;
+        try {
+            uid = Integer.parseInt(request.getAttribute("id").toString());
+        } catch (Exception e){
+            e.printStackTrace();
+            uid = 5;  //设置为 5 便于测试，以后要改
+        }
+
+        List<CollectionInfo> collectionInfos = iImageInfoService.getCollectionInfo(uid);
+        ResponseData result =  ResponseData.ok();
+        result.putDataValue("collect",collectionInfos);
+        return result;
+    }
+
     //图片点赞或取消点赞
     @RequestMapping(value = "/like", method = RequestMethod.POST)
     public ResponseData like(ImageLike imageLike) {

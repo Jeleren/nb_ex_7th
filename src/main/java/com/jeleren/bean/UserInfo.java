@@ -1,5 +1,7 @@
 package com.jeleren.bean;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class UserInfo {
     private int id;
     private String username;
@@ -10,6 +12,15 @@ public class UserInfo {
     private int follow_num;
     private int upload_num;
     private int download_num;
+    MultipartFile userImage;
+
+    public MultipartFile getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(MultipartFile userImage) {
+        this.userImage = userImage;
+    }
 
     public UserInfo() {
     }

@@ -16,4 +16,6 @@ public interface IUserInfoService {
     UserInfo findUserByUsername (String username);
 
     void updateUploadNum(int user_id);
+    //更新用户信息，名称，描述，头像
+    void updateUserInfo( UserInfo userinfo,int id);
 }

@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jeleren.dao.IImageInfoDao">
-    <insert id="add" parameterType="com.jeleren.bean.ImageInfo"  useGeneratedKeys="true"  keyProperty="id">
-      insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num, pattern
-      ) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0, #{pattern})
+    <insert id="add" parameterType="com.jeleren.bean.ImageInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num,
+        collect_num, pattern
+        ) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0,
+        #{pattern})
         <!--<selectKey keyProperty="id" resultType="int" >-->
-            <!--SELECT @@IDENTITY AS ID-->
+        <!--SELECT @@IDENTITY AS ID-->
         <!--</selectKey>-->
-  </insert>
+    </insert>
     <!--<insert id="add" parameterType="com.jeleren.bean.ImageInfo">-->
-            <!--insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0)-->
+    <!--insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0)-->
     <!--</insert>-->
     <!--<select id="searchImage" resultType="com.jeleren.bean.ImageInfo">-->
-        <!--SELECT DISTINCT images.*-->
-        <!--FROM images-->
-        <!--inner JOIN image_keywords ON images.id = image_keywords.id-->
-        <!--<where>-->
-            <!--<if test="sList.pattern!=null">-->
-                <!--images.pattern = #{sList.pattern}-->
-            <!--</if>-->
-            <!--<if test="sList.cateList.size()>0">-->
-                <!--and images.cates in-->
-                <!--<foreach collection="sList.cateList" item="cate" open="(" separator="," close=")">-->
-                    <!--#{cate}-->
-                <!--</foreach>-->
-            <!--</if>-->
-            <!--<if test="sList.keyword!=null">-->
-                <!--and image_keywords.keyword like concat('%',#{sList.keyword},'%')-->
-            <!--</if>-->
-        <!--</where>-->
-        <!--order by images.add_time ${sList.seq}-->
+    <!--SELECT DISTINCT images.*-->
+    <!--FROM images-->
+    <!--inner JOIN image_keywords ON images.id = image_keywords.id-->
+    <!--<where>-->
+    <!--<if test="sList.pattern!=null">-->
+    <!--images.pattern = #{sList.pattern}-->
+    <!--</if>-->
+    <!--<if test="sList.cateList.size()>0">-->
+    <!--and images.cates in-->
+    <!--<foreach collection="sList.cateList" item="cate" open="(" separator="," close=")">-->
+    <!--#{cate}-->
+    <!--</foreach>-->
+    <!--</if>-->
+    <!--<if test="sList.keyword!=null">-->
+    <!--and image_keywords.keyword like concat('%',#{sList.keyword},'%')-->
+    <!--</if>-->
+    <!--</where>-->
+    <!--order by images.add_time ${sList.seq}-->
     <!--</select>-->
 
     <!--搜索结果集合，一张图片一个用户信息-->
@@ -106,7 +108,7 @@
     <resultMap id="imageResult" type="com.jeleren.bean.ImageResult">
         <!--<id property="id" column="id"/>-->
         <result property="if_like" column="rela_id"/>
-        <result property="if_follow"  column="id"/>
+        <result property="if_follow" column="id"/>
         <association property="user" javaType="com.jeleren.bean.UserInfo">
             <id property="id" column="id"/>
             <result property="image" column="user_image"/>
@@ -228,7 +230,7 @@
     </select>
 
     <!--根据不同的状态得到用户的图片-->
-    <select id="getImagesByActive"  resultMap="imageAndUserResult">
+    <select id="getImagesByActive" resultMap="imageAndUserResult">
       SELECT  images.id AS image_id,
         images.image,
         images.name,
@@ -260,6 +262,51 @@
         COUNT(if_active)
         FROM images
         WHERE if_active = #{active_id}
+    </select>
+
+    <!--获得收藏夹信息-->
+    <resultMap id="collectionInfo" type="com.jeleren.bean.CollectionInfo">
+        <id property="id" column="id"/>
+        <result property="update_time" column="update_time"/>
+        <result property="num" column="cnt"/>
+        <result property="name" column="c_name"/>
+        <result property="id" column="id"/>
+        <collection property="imageInfos" javaType="list" ofType="com.jeleren.bean.ImageInfo">
+            <id property="id" column="image_id"/>
+            <result property="image" column="image"/>
+            <result property="name" column="name"/>
+            <result property="keywords" column="keywords"/>
+            <result property="cates" column="cates"/>
+            <result property="description" column="description"/>
+            <result property="add_time" column="add_time"/>
+            <result property="like_num" column="like_num"/>
+            <result property="collect_num" column="collect_num"/>
+            <result property="if_active" column="if_active"/>
+        </collection>
+    </resultMap>
+
+    <select id="getCollectionInfo" parameterType="int" resultMap="collectionInfo">
+          SELECT  images.id AS image_id,
+            images.image,
+            images.name,
+            images.cates,
+            images.description,
+            images.keywords,
+            images.pre_image,
+            images.if_active,
+            images.add_time,
+            images.like_num,
+            images.collect_num,
+            images.user_id,
+
+            c.name as c_name,
+            c.add_time as update_time,
+            c.id as id
+
+            FROM collect c
+            INNER JOIN image_collect ic ON ic.collect_id = c.id
+            INNER JOIN images ON images.id = ic.image_id
+            WHERE c.user_id = #{uid}
     </select>
 
 

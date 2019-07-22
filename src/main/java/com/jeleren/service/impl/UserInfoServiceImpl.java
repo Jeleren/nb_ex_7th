@@ -54,4 +54,9 @@ public class UserInfoServiceImpl implements IUserInfoService {
     public void updateUploadNum(int user_id) {
         userInfoDao.updateUploadNum(user_id);
     }
+
+    @Override
+    public void updateUserInfo(UserInfo userinfo,int id) {
+        userInfoDao.updateUserInfo(userinfo,id);
+    }
 }

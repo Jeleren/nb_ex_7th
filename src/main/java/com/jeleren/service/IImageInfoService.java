@@ -1,11 +1,9 @@
 package com.jeleren.service;
 
-import com.jeleren.bean.ImageAndUserResult;
-import com.jeleren.bean.ImageInfo;
-import com.jeleren.bean.ImageResult;
+import com.jeleren.bean.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import com.jeleren.bean.SearchList;
 
 import java.util.List;
 
@@ -26,4 +24,5 @@ public interface IImageInfoService {
     List<ImageAndUserResult> getUserImages(int uid, int page, int size);
     List<ImageAndUserResult> getImagesByActive(int uid,int page,int size,int if_active);
     List<Integer> getActiveNum();
+    List<CollectionInfo> getCollectionInfo(int uid);
 }
