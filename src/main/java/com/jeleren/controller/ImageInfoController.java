@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -47,7 +48,6 @@ public class ImageInfoController {
     private IImageLikeService iImageLikeService;
 
 
-    //用户上传图片
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
     public ResponseData uploadPic(ImageInfo imageInfo, HttpServletRequest request) throws IOException {
@@ -55,7 +55,7 @@ public class ImageInfoController {
         System.out.println(imageInfo.toString());
         String imgPath = null;//装配后的图片地址
         if (imageFile != null && !imageFile.isEmpty()) {
-            //使用时间戳给图片重命名
+            // 使用时间戳给图片重命名
             String url = request.getSession().getServletContext().getRealPath("/images/");
             File file = new File(url);
             if (!file.isDirectory()) {
@@ -81,7 +81,7 @@ public class ImageInfoController {
             imageInfo.setPattern(ext);
             // 以绝对路径保存重名命后的图片
             imageFile.transferTo(new File(absoPath));
-            //将信息保存到数据库中
+            // 将信息保存到数据库中
             iImageInfoService.add(imageInfo);
             int image_id = imageInfo.getId();
             groupService.addIGR(image_cate, image_id);
@@ -97,7 +97,7 @@ public class ImageInfoController {
         return res;
     }
 
-    //更新图片信息
+    // 更新未上传图片信息
     @RequestMapping(value = "{image_id}", method = RequestMethod.POST)
     @ResponseBody
     public ResponseData updateImage(@PathVariable("image_id") int image_id, HttpServletRequest request) {
@@ -118,7 +118,7 @@ public class ImageInfoController {
         return ResponseData.ok();
     }
 
-    //用户搜索图片
+    // 搜索图片
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> searchImage(HttpServletRequest request) throws UnsupportedEncodingException {
@@ -129,8 +129,7 @@ public class ImageInfoController {
         int page;
         if (temp != null) {
             page = Integer.parseInt(temp);
-        } else
-            page = 1;
+        } else page = 1;
         int size = 16;
         String pattern = request.getParameter("pattern");
 
@@ -153,7 +152,7 @@ public class ImageInfoController {
 
     //获得不同状态的图片,测试完毕ok
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public List<ImageAndUserResult> getImagesByActive(HttpServletRequest request, HttpServletResponse response) {
+    public List<ImageInfo> getImagesByActive(HttpServletRequest request, HttpServletResponse response) {
         //假设用户id 为 1，这个地方的id可以通过token 获得
         int uid = Integer.parseInt(request.getAttribute("user_id").toString());
         int page = Integer.parseInt(request.getParameter("page"));
@@ -176,8 +175,7 @@ public class ImageInfoController {
     //得到各种状态图片的个数
     @RequestMapping(value = "image_num", method = RequestMethod.GET)
     public List getActiveNum() {
-        List<Integer> activeNumList = iImageInfoService.getActiveNum();
-        return activeNumList;
+        return iImageInfoService.getActiveNum();
     }
 
     // 获得集合所有的信息 测试完成
@@ -342,7 +340,11 @@ public class ImageInfoController {
         return m;
     }
 
-
+    @RequestMapping(value = "delete/{image_id}", method = RequestMethod.DELETE)
+    public ResponseData deleteImage(@PathVariable int image_id){
+        iImageInfoService.deleteImage(image_id);
+        return ResponseData.ok();
+    }
 
 
 }

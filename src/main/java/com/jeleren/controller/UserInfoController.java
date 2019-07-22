@@ -1,11 +1,6 @@
 package com.jeleren.controller;
 
-import com.jeleren.bean.CollectionInfo;
-import com.jeleren.bean.UserRelation;
 import com.jeleren.bean.UserInfo;
-import com.jeleren.service.IImageInfoService;
-import com.jeleren.service.IUserRelationService;
-import com.jeleren.service.IRoleService;
 import com.jeleren.service.IUserInfoService;
 import com.jeleren.utils.JWT;
 import com.jeleren.utils.ResponseData;
@@ -15,11 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,9 +20,6 @@ public class UserInfoController {
 
     @Autowired
     private IUserInfoService userInfoService;
-
-    @Autowired
-    private IRoleService roleService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody

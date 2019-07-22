@@ -54,7 +54,6 @@ public class ImageInfoServiceImpl implements IImageInfoService {
 
     @Override
     public Map<String, Object> getUserImages(int uid, int page, int size) {
-        System.out.println(uid);
         List<ImageResult> imageResults = iImageInfoDao.getUserImages(uid);
         int count = imageResults.size();
         Map<String, Object> m = new HashMap<>();
@@ -65,18 +64,16 @@ public class ImageInfoServiceImpl implements IImageInfoService {
     }
 
     @Override
-    public List<ImageAndUserResult> getImagesByActive(int uid, int page, int size, int if_active) {
-//        star
-        List<ImageAndUserResult> imageInfos = iImageInfoDao.getImagesByActive(uid, if_active);
+    public List<ImageInfo> getImagesByActive(int uid, int page, int size, int if_active) {
+        List<ImageInfo> imageInfos = iImageInfoDao.getImagesByActive(uid, if_active);
         // 将图片数目放到结构中去，图片数目每个结果都保存一份
-        int count;
-        if (imageInfos.size() > 0) {
-            count = imageInfos.get(0).getImageInfos().size();
-            for (int i = 0; i < count; i++) {
-                imageInfos.get(i).setCount(count);
-            }
-        }
-
+//        int count;
+//        if (imageInfos.size() > 0) {
+//            count = imageInfos.get(0).getImageInfos().size();
+//            for (int i = 0; i < count; i++) {
+//                imageInfos.get(i).setCount(count);
+//            }
+//        }
         PageHelper.startPage(page, size);
         return imageInfos;
     }
@@ -86,6 +83,10 @@ public class ImageInfoServiceImpl implements IImageInfoService {
         iImageInfoDao.updateImage(imageInfo);
     }
 
+    @Override
+    public void deleteImage(int image_id) {
+        iImageInfoDao.deleteImage(image_id);
+    }
 
 
     @Override
@@ -99,8 +100,6 @@ public class ImageInfoServiceImpl implements IImageInfoService {
         listResult.add(tmp2);
         listResult.add(tmp3);
         listResult.add(tmp4);
-
-
         return listResult;
     }
 

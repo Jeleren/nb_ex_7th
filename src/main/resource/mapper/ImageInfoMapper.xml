@@ -1,39 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jeleren.dao.IImageInfoDao">
-    <insert id="add" parameterType="com.jeleren.bean.ImageInfo"  useGeneratedKeys="true"  keyProperty="id">
+    <insert id="add" parameterType="com.jeleren.bean.ImageInfo" useGeneratedKeys="true" keyProperty="id">
       insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num, pattern
       ) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0, #{pattern})
-        <!--<selectKey keyProperty="id" resultType="int" >-->
-            <!--SELECT @@IDENTITY AS ID-->
-        <!--</selectKey>-->
   </insert>
-    <!--<insert id="add" parameterType="com.jeleren.bean.ImageInfo">-->
-            <!--insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0)-->
-    <!--</insert>-->
-    <!--<select id="searchImage" resultType="com.jeleren.bean.ImageInfo">-->
-        <!--SELECT DISTINCT images.*-->
-        <!--FROM images-->
-        <!--inner JOIN image_keywords ON images.id = image_keywords.id-->
-        <!--<where>-->
-            <!--<if test="sList.pattern!=null">-->
-                <!--images.pattern = #{sList.pattern}-->
-            <!--</if>-->
-            <!--<if test="sList.cateList.size()>0">-->
-                <!--and images.cates in-->
-                <!--<foreach collection="sList.cateList" item="cate" open="(" separator="," close=")">-->
-                    <!--#{cate}-->
-                <!--</foreach>-->
-            <!--</if>-->
-            <!--<if test="sList.keyword!=null">-->
-                <!--and image_keywords.keyword like concat('%',#{sList.keyword},'%')-->
-            <!--</if>-->
-        <!--</where>-->
-        <!--order by images.add_time ${sList.seq}-->
-    <!--</select>-->
 
     <!--搜索结果集合，一张图片一个用户信息-->
-    <resultMap id="seachResult" type="com.jeleren.bean.ImageResult">
+    <resultMap id="search" type="com.jeleren.bean.ImageResult">
         <id property="id" column="image_id"/>
         <result property="if_like" column="rela_id"/>
         <result property="if_follow" column="ur_id"/>
@@ -58,10 +32,11 @@
             <result property="collect_num" column="collect_num"/>
             <result property="if_active" column="if_active"/>
             <result property="user_id" column="user_id"/>
+            <result property="pattern" column="pattern"/>
         </association>
     </resultMap>
 
-    <select id="searchImage" resultMap="seachResult">
+    <select id="searchImage" parameterType="com.jeleren.bean.SearchList" resultMap="search">
         SELECT DISTINCT images.id AS image_id,
         images.image,
         images.name,
@@ -83,12 +58,11 @@
         u.follow_num,
         u.upload_num,
         u.download_num,
-        u.description as u_description
+        u.description as u_description,
 
         uil.rela_id,
         ur.id as ur_id
         FROM images
-        inner JOIN image_keyword ON images.id = image_keyword.image_id
         inner join userinfo u on images.user_id = u.id
         left join user_image_like uil on uil.image_id=images.id and uil.user_id = #{sList.user_id}
         left join user_rela ur on ur.user_id = u.id and ur.fan_id = #{sList.user_id}
@@ -108,6 +82,7 @@
             </if>
         </where>
         order by images.add_time ${sList.seq}
+
     </select>
 
     <resultMap id="imageResult" type="com.jeleren.bean.ImageResult">
@@ -154,7 +129,7 @@
         inner join image_group ig on images.id=ig.image_id
         inner join userinfo u on u.id=images.user_id
         left join user_image_like uil on uil.image_id=images.id and uil.user_id = #{user_id}
-        left join user_rela ur on ur.user_id = u.id and ur.fan_id = #{user_id}
+        left join user_rela ur on ur.follow_id = u.id and ur.fan_id = #{user_id}
         where ig.group_id = #{group_id} and images.if_active = 4
     </select>
 
@@ -166,15 +141,16 @@
         images.cates,
         images.description,
         images.pattern,
+        images.user_id,
         images.id as image_id,
         u.image as user_image,
         u.username,
+        u.id,
         u.upload_num,
         u.fan_num,
         uil.rela_id,
         ur.id
         from images
---         inner join image_group ig on images.id = ig.image_id
         inner join userinfo u on u.id=images.user_id
         left join user_image_like uil on uil.image_id=images.id and uil.user_id = #{user_id}
         left join user_rela ur on ur.user_id = u.id and ur.fan_id = #{user_id}
@@ -223,57 +199,33 @@
     </resultMap>
 
     <!--获得用户id上传的图片-->
-    <select id="getUserImages" parameterType="int" resultMap="imageAndUserResult">
-           SELECT  images.id AS image_id,
-        images.image,
+    <select id="getUserImages" parameterType="int" resultMap="imageResult">
+        select images.image,
         images.name,
+        images.keywords,
+        images.add_time,
         images.cates,
         images.description,
-        images.keywords,
-        images.pre_image,
-        images.if_active,
-        images.add_time,
-        images.like_num,
-        images.collect_num,
-        images.user_id,
+        images.pattern,
+        images.id as image_id,
 
         u.username,
         u.image AS user_image,
         u.fan_num,
-        u.follow_num,
         u.upload_num,
-        u.download_num,
-        u.description as u_description
-
+        u.id,
+        uil.rela_id
         FROM images
-        INNER JOIN userinfo u ON u.id=images.user_id WHERE u.id = #{uid}
+        INNER JOIN userinfo u ON u.id=images.user_id
+        left join user_image_like uil on uil.image_id=images.id and uil.user_id = #{uid}
+        WHERE u.id = #{uid}
     </select>
 
     <!--根据不同的状态得到用户的图片-->
-    <select id="getImagesByActive"  resultMap="imageAndUserResult">
-      SELECT  images.id AS image_id,
-        images.image,
-        images.name,
-        images.cates,
-        images.description,
-        images.keywords,
-        images.pre_image,
-        images.if_active,
-        images.add_time,
-        images.like_num,
-        images.collect_num,
-        images.user_id,
-
-        u.username,
-        u.image AS user_image,
-        u.fan_num,
-        u.follow_num,
-        u.upload_num,
-        u.download_num,
-        u.description as u_description
-
+    <select id="getImagesByActive" resultType="com.jeleren.bean.ImageInfo">
+      SELECT  images.*
         FROM images
-        INNER JOIN userinfo u ON u.id=images.user_id WHERE if_active = #{if_active} AND u.id = #{uid}
+        WHERE if_active = #{if_active} AND user_id = #{uid}
     </select>
 
     <!--通过图片的active得到其数量-->
@@ -385,5 +337,9 @@
     <update id="markImage_update">
         update images set collect_num = collect_num + 1 where id = #{image_id}
     </update>
+
+    <delete id="deleteImage" parameterType="int">
+        delete from images where id = #{image_id}
+    </delete>
 
 </mapper>

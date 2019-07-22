@@ -9,6 +9,7 @@ import com.jeleren.utils.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.List;
@@ -24,14 +25,14 @@ public class UserRelationController {
     private IImageLikeService iImageLikeService;
 
 
-    @GetMapping(value = "/fan/{user_id}")
-    public List<UserInfo> getFansList(@PathVariable(name = "user_id", required = true)int user_id) {
-        return userRelationService.getFansList(user_id);
+    @GetMapping(value = "/fan")
+    public List<UserInfo> getFansList(HttpServletRequest request) {
+        return userRelationService.getFansList((Integer) request.getAttribute("user_id"));
     }
 
-    @GetMapping(value = "/follow/{user_id}")
-    public List<UserInfo> getFollowerList(@PathVariable(name = "user_id", required = true)int user_id) {
-        return userRelationService.getFollowList(user_id);
+    @GetMapping(value = "/follow")
+    public List<UserInfo> getFollowerList(HttpServletRequest request) {
+        return userRelationService.getFollowList((Integer) request.getAttribute("user_id"));
     }
 
     @PostMapping(value = "/follow")
@@ -41,17 +42,11 @@ public class UserRelationController {
         int follow_id = focus.getFollow_id();  //要关注的人
         boolean tag = userRelationService.checkFollowed(follow_id, fan_id);
         if(tag){
-            boolean cancel = userRelationService.cancelFollow(follow_id, fan_id);
-            if(cancel)
-                return ResponseData.ok();
-            else
-                return ResponseData.badRequest("取消关注成功");
+            userRelationService.cancelFollow(follow_id, fan_id);
+            return ResponseData.ok();
         }else {
-            boolean follow = userRelationService.follow(follow_id, fan_id);
-            if(follow)
-                return ResponseData.ok();
-            else
-                return ResponseData.badRequest("关注成功");
+            userRelationService.follow(follow_id, fan_id);
+            return ResponseData.ok();
         }
 
     }

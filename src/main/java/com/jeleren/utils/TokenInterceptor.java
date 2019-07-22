@@ -25,6 +25,12 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handler) throws Exception {
         response.setCharacterEncoding("utf-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "0");
+        response.setHeader("Access-Control-Allow-Headers",
+                "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With,userId,token");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         String token = request.getHeader("Authorization");
         System.out.println("interceptor token    "+token);
         ResponseData responseData = ResponseData.ok();
@@ -32,6 +38,8 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (null != token) {
             UserInfo user = JWT.unsign(token, UserInfo.class);
             if(user!=null) {
+                System.out.println(user.getId());
+                request.setAttribute("user_id", user.getId());
                 return true;
             } else {
                 responseData = ResponseData.forbidden();

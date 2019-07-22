@@ -1,10 +1,12 @@
 package com.jeleren.service;
 
-import com.jeleren.bean.*;
+import com.jeleren.bean.CollectionInfo;
+import com.jeleren.bean.ImageInfo;
+import com.jeleren.bean.ImageResult;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import com.jeleren.bean.SearchList;
 
 import java.util.Map;
 
@@ -23,9 +25,10 @@ public interface IImageInfoService {
     ImageResult getImageInfo(int image_id, int user_id);
     Map<String, Object> searchImage(SearchList searchList);
     Map<String, Object> getUserImages(int uid, int page, int size);
-    List<ImageAndUserResult> getImagesByActive(int uid,int page,int size,int if_active);
+    List<ImageInfo> getImagesByActive(int uid, int page, int size, int if_active);
 
     void updateImage(ImageInfo imageInfo);
+    void deleteImage(int image_id);
     List<Integer> getActiveNum();
     List<CollectionInfo> getCollectionInfo(int uid);
     void deleteCollection(int collect_id,int uid);
