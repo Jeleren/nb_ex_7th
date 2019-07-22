@@ -28,4 +28,6 @@ public interface IImageInfoService {
     List<Integer> getActiveNum();
     List<CollectionInfo> getCollectionInfo(int uid);
     CollectionInfo getCollectionImageById(int uid, int collect_id, int page, int num);
+    void deleteImageCollectById(int collect_id, int image_id);
+    void updateImageCollectNumDeleteOneById(int image_id);
 }

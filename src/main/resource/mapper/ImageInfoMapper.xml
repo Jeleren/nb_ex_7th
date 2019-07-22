@@ -224,7 +224,7 @@
 
     <!--获得用户id上传的图片-->
     <select id="getUserImages" parameterType="int" resultMap="imageAndUserResult">
-           SELECT  images.id AS image_id,
+        SELECT  images.id AS image_id,
         images.image,
         images.name,
         images.cates,
@@ -352,4 +352,15 @@
         inner join images on images.id = ic.image_id
         where ic.collect_id = #{collect_id} and c.user_id = #{uid}
     </select>
+
+    <delete id="deleteImageCollectById" parameterType="_int">
+	 	delete from image_collect where image_id = #{image_id} and collect_id = #{collect_id}
+    </delete>
+
+    <update id="updateImageCollectNumDeleteOneById" parameterType="_int">
+        update images
+        set
+            collect_num = collect_num - 1
+        where id = #{image_id}
+    </update>
 </mapper>

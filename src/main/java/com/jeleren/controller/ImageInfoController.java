@@ -221,6 +221,21 @@ public class ImageInfoController {
         return result;
     }
 
+//    取消收藏图片
+    /*
+    1.image_collect里面删去有image_id的这一行
+    2.由imgae_collect的collect_id找到image_id，将collect_num数量减1
+     */
+    @RequestMapping(value = "/collect/delete_image", method = RequestMethod.GET)
+    public ResponseData deleteImage(HttpServletRequest request){
+        int collect_id = Integer.parseInt(request.getParameter("collect_id").toString());
+        int image_id = Integer.parseInt(request.getParameter("image_id").toString());
+        iImageInfoService.updateImageCollectNumDeleteOneById(image_id);
+        iImageInfoService.deleteImageCollectById(collect_id,image_id);
+        ResponseData result = ResponseData.ok();
+        return result;
+    }
+
 
 
     //图片点赞或取消点赞
@@ -257,6 +272,8 @@ public class ImageInfoController {
                 Integer.parseInt(request.getAttribute("user_id").toString())));
         return m;
     }
+
+
 
 
 }

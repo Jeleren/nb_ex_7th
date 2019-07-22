@@ -49,7 +49,13 @@ public interface IImageInfoDao {
     //根据collect_id查询所有图片
     CollectionInfo getCollectionImageById(@Param("collect_id") int collect_id,@Param("uid") int uid);
 
-     void updateImage(@Param("imageInfo") ImageInfo imageInfo);
+    //删除图片收藏夹里面的图片通过id
+    void deleteImageCollectById(@Param("collect_id") int collect_id,@Param("image_id") int image_id);
+
+    void updateImageCollectNumDeleteOneById(int image_id);
+
+    //更新图片信息
+    void updateImage(@Param("imageInfo") ImageInfo imageInfo);
 
 
 }

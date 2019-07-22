@@ -126,5 +126,15 @@ public class ImageInfoServiceImpl implements IImageInfoService {
         return collectionInfo;
     }
 
+    @Override
+    public void deleteImageCollectById(int collect_id, int image_id) {
+        iImageInfoDao.deleteImageCollectById(collect_id, image_id);
+    }
+
+    @Override
+    public void updateImageCollectNumDeleteOneById(int image_id) {
+        iImageInfoDao.updateImageCollectNumDeleteOneById(image_id);
+    }
+
 
 }
