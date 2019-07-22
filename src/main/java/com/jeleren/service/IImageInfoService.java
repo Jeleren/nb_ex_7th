@@ -31,4 +31,5 @@ public interface IImageInfoService {
     void deleteCollection(int collect_id,int uid);
     void createCollection(int uid, String collectName, Date date);
     void markImage(int uid ,int collect_id,int image_id);
+    CollectionInfo getCollectionImageById(int uid, int collect_id, int page, int num);
 }

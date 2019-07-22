@@ -28,7 +28,7 @@ import java.util.Map;
  * Description: <br/>
  * date: 2019/7/17 22:07<br/>
  *
- * @author a8243<br                                                                                                                                                                                                                                                               />
+ * @author a8243<br                                                               />
  * @since JDK 1.8
  */
 @RestController
@@ -47,6 +47,7 @@ public class ImageInfoController {
     private IImageLikeService iImageLikeService;
 
 
+    //用户上传图片
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
     public ResponseData uploadPic(ImageInfo imageInfo, HttpServletRequest request) throws IOException {
@@ -96,6 +97,7 @@ public class ImageInfoController {
         return res;
     }
 
+    //更新图片信息
     @RequestMapping(value = "{image_id}", method = RequestMethod.POST)
     @ResponseBody
     public ResponseData updateImage(@PathVariable("image_id") int image_id, HttpServletRequest request) {
@@ -116,6 +118,7 @@ public class ImageInfoController {
         return ResponseData.ok();
     }
 
+    //用户搜索图片
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> searchImage(HttpServletRequest request) throws UnsupportedEncodingException {
@@ -133,9 +136,9 @@ public class ImageInfoController {
 
         SearchList searchList = new SearchList();
         searchList.setKeyword(keyword);
-        if (cates != null && !cates.equals(""))
+        if(cates != null && !cates.equals(""))
             searchList.setCate(cates);
-        if (pattern != null && !pattern.equals(""))
+        if(pattern != null && !pattern.equals(""))
             searchList.setPattern(pattern);
         searchList.setPage(page);
         searchList.setSize(size);
@@ -154,8 +157,7 @@ public class ImageInfoController {
         //假设用户id 为 1，这个地方的id可以通过token 获得
         int uid = Integer.parseInt(request.getAttribute("user_id").toString());
         int page = Integer.parseInt(request.getParameter("page"));
-        if (!(page > 0))
-            page = 1;
+        if(!(page > 0)) page = 1;
         int size = Integer.parseInt(request.getParameter("num"));
         int if_active = Integer.parseInt(request.getParameter("if_active"));
         return iImageInfoService.getImagesByActive(uid, page, size, if_active);
@@ -179,20 +181,20 @@ public class ImageInfoController {
     }
 
     // 获得集合所有的信息 测试完成
-    @RequestMapping(value = "/collect", method = RequestMethod.GET)
+    @RequestMapping(value = "/collect", method =RequestMethod.GET)
 //    @ResponseBody
-    public ResponseData getCollectionInfo(HttpServletRequest request) {
+    public ResponseData getCollectionInfo(HttpServletRequest request){
         int uid;
         try {
             uid = Integer.parseInt(request.getAttribute("id").toString());
-        } catch (Exception e) {
+        } catch (Exception e){
             e.printStackTrace();
             uid = 5;  //设置为 5 便于测试，以后要改
         }
 
         List<CollectionInfo> collectionInfos = iImageInfoService.getCollectionInfo(uid);
-        ResponseData result = ResponseData.ok();
-        result.putDataValue("collect", collectionInfos);
+        ResponseData result =  ResponseData.ok();
+        result.putDataValue("collect",collectionInfos);
         return result;
     }
 
@@ -264,6 +266,34 @@ public class ImageInfoController {
 
         return ResponseData.ok();
     }
+
+
+    //根据收藏夹id获得收藏夹中所有图片
+    @RequestMapping(value = "/id", method = RequestMethod.GET)
+    public ResponseData getCollectionImageById(HttpServletRequest request) {
+        //get方法得到page和num
+        int collect_id = Integer.parseInt(request.getParameter("collect_id").toString());
+        int page = Integer.parseInt(request.getParameter("page").toString());
+        int num = Integer.parseInt(request.getParameter("num").toString());
+        int uid;
+        try {
+            uid = Integer.parseInt(request.getAttribute("id").toString());
+        } catch (Exception e){
+            e.printStackTrace();
+            uid = 5;  //设置为 5 便于测试，以后要改
+        }
+        CollectionInfo collectionInfos = iImageInfoService.getCollectionImageById(uid,collect_id,page,num);
+        //获取图片数目
+        int count = collectionInfos.getImageInfos().size();
+        collectionInfos.setNum(count);
+        //转换时间格式
+
+        ResponseData result = ResponseData.ok();
+        result.putDataValue("collectionInfo",collectionInfos);
+
+        return result;
+    }
+
 
 
     //图片点赞或取消点赞
