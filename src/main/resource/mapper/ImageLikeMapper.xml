@@ -3,12 +3,12 @@
 <mapper namespace="com.jeleren.dao.IImageLikeDao">
 
     <insert id="imageLike">
-        insert into imagelike (image, user) values (#{image}, #{user})
+        insert into user_image_like (image_id, user_id) values (#{image}, #{user})
     </insert>
     <delete id="cancelImageLike">
-        delete from imagelike where image = #{image} and user = #{user}
+        delete from user_image_like where image_id = #{image} and user_id = #{user}
     </delete>
     <select id="checkImageLiked" resultType="com.jeleren.bean.ImageLike">
-        select * from imagelike where image = #{image} and user = #{user}
+        select * from user_image_like where image_id = #{image} and user_id = #{user}
     </select>
 </mapper>

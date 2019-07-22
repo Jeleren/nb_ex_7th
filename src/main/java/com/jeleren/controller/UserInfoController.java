@@ -32,7 +32,7 @@ public class UserInfoController {
         ResponseData responseData = ResponseData.ok();
         if(user != null) {
             //给用户jwt加密生成token
-            String token = JWT.sign(user, 60L* 1000L* 30L*10);
+            String token = JWT.sign(user, 60L* 1000L* 30L*100);
             System.out.println("token"+token);
             responseData.putDataValue("token", token);
         }

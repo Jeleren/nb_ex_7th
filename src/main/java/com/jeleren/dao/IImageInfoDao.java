@@ -23,21 +23,23 @@ import org.apache.ibatis.annotations.Param;
  * @since JDK 1.8
  */
 public interface IImageInfoDao {
-    int add(ImageInfo imageInfo);
+    void add(ImageInfo imageInfo);
 
     List<ImageResult> getMainImage(@Param("user_id") int user_id, @Param("group_id") int group_id);
 
     ImageResult getImageInfo(@Param("image_id") int image_id, @Param("user_id") int user_id);
-//    List<ImageInfo> searchImage(@Param("sList") SearchList searchList);
+
     List<ImageResult> searchImage(@Param("sList") SearchList searchList);
 
 
     //修改点赞数目
     boolean editImageLikeNum(@Param("image") int image, @Param("record") String record);
     //获得用户上传的所有图片
-     List<ImageAndUserResult> getUserImages(int uid);
+     List<ImageResult> getUserImages(int uid);
      // 根据状态获得图片
      List<ImageAndUserResult>  getImagesByActive(@Param("uid") int uid, @Param("if_active") int if_active);
+
+     void updateImage(@Param("imageInfo") ImageInfo imageInfo);
 
      int getActiveNum(int active_id);
 }

@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: IImageInfoImpl <br/>
@@ -28,8 +30,8 @@ public class ImageInfoServiceImpl implements IImageInfoService {
     private IImageInfoDao iImageInfoDao;
 
     @Override
-    public int add(ImageInfo imageInfo) {
-        return iImageInfoDao.add(imageInfo);
+    public void add(ImageInfo imageInfo) {
+        iImageInfoDao.add(imageInfo);
     }
 
     @Override
@@ -44,30 +46,26 @@ public class ImageInfoServiceImpl implements IImageInfoService {
     }
 
     @Override
-    public List<ImageResult> searchImage(SearchList searchList) {
+    public Map<String, Object> searchImage(SearchList searchList) {
         List<ImageResult> imageResults = iImageInfoDao.searchImage(searchList);
         int count = imageResults.size();
-        for (int i = 0; i < count; i++) {
-            imageResults.get(i).setCount(count);
-        }
-//        imageResults.set
+        Map<String, Object> m = new HashMap<>();
+        m.put("result", imageResults);
+        m.put("count", count);
         PageHelper.startPage(searchList.getPage(), searchList.getSize());
-
-        return imageResults;
+        return m;
     }
 
     @Override
-    public List<ImageAndUserResult> getUserImages(int uid, int page, int size) {
-        List<ImageAndUserResult> imageInfos =  iImageInfoDao.getUserImages(uid);
-        int count;
-        if (imageInfos.size() > 0) {
-            count = imageInfos.get(0).getImageInfos().size();
-            for (int i = 0; i < count; i++) {
-                imageInfos.get(i).setCount(count);
-            }
-        }
-        PageHelper.startPage(page, size);
-        return imageInfos;
+    public Map<String, Object> getUserImages(int uid, int page, int size) {
+        System.out.println(uid);
+        List<ImageResult> imageResults = iImageInfoDao.getUserImages(uid);
+        int count = imageResults.size();
+        Map<String, Object> m = new HashMap<>();
+        m.put("result", imageResults);
+        m.put("count", count);
+        PageHelper.startPage(page,size);
+        return m;
     }
 
     @Override
@@ -86,6 +84,13 @@ public class ImageInfoServiceImpl implements IImageInfoService {
         PageHelper.startPage(page, size);
         return imageInfos;
     }
+
+    @Override
+    public void updateImage(ImageInfo imageInfo) {
+        iImageInfoDao.updateImage(imageInfo);
+    }
+
+
 
     @Override
     public List<Integer> getActiveNum() {

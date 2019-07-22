@@ -69,7 +69,7 @@ public class ImageInfoController {
             String image_cate = request.getParameter("cates");
             imageInfo.setCates(image_cate);
             imageInfo.setDescription(request.getParameter("description"));
-            imageInfo.setName(request.getParameter("name") + "|" + name);
+            imageInfo.setName(request.getParameter("name"));
             imageInfo.setIf_active(imageInfo.getIf_active());
             imageInfo.setAdd_time(new Date(System.currentTimeMillis()));
             imageInfo.setPattern(ext);
@@ -83,6 +83,7 @@ public class ImageInfoController {
             for (String keyword : keywords) {
                 groupService.addIKR(keyword, image_id);
             }
+            // 更新用户上传数量
             userInfoService.updateUploadNum(imageInfo.getUser_id());
         }
         ResponseData res = ResponseData.ok();
@@ -90,113 +91,77 @@ public class ImageInfoController {
         return res;
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @RequestMapping(value = "{image_id}", method = RequestMethod.POST)
     @ResponseBody
-    public List<ImageResult> searchImage(HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
-        httpServletRequest.setCharacterEncoding("UTF-8");
-        String keyword = httpServletRequest.getParameter("search");
-        String cates = httpServletRequest.getParameter("-cates");
-        String seq = httpServletRequest.getParameter("order");
-        String temp = httpServletRequest.getParameter("page");
+    public ResponseData updateImage(@PathVariable("image_id") int image_id, HttpServletRequest request) {
+        ImageInfo imageInfo = new ImageInfo();
+        String cates = request.getParameter("cates");
+        String keywords = request.getParameter("keywords");
+        String decription = request.getParameter("description");
+        String if_active = request.getParameter("if_active");
+        imageInfo.setId(image_id);
+        if (cates != null)
+            imageInfo.setCates(cates);
+        if (keywords != null)
+            imageInfo.setKeywords(keywords);
+        if (decription != null)
+            imageInfo.setDescription(decription);
+        imageInfo.setIf_active(Integer.parseInt(if_active));
+        iImageInfoService.updateImage(imageInfo);
+        return ResponseData.ok();
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> searchImage(HttpServletRequest request) throws UnsupportedEncodingException {
+        String keyword = request.getParameter("search");
+        String cates = request.getParameter("-cates");
+        String seq = request.getParameter("order");
+        String temp = request.getParameter("page");
         int page;
-        int size;
-        if (temp != null && !temp.equals("")) {
+        if (temp != null) {
             page = Integer.parseInt(temp);
-        } else {
-            page = 1;
-        }
-        size = 16;
-
-//        PageHelper.startPage(page, num);
-        /*
-        这个地方，逻辑处理需要严谨
-         */
-        String[] tmp2 = null;
-        List<String> cateList = new ArrayList<>();
-        if (cates != null) {
-            tmp2 = cates.split(" ");
-            for (int i = 0; i < tmp2.length; i++) {
-                cateList.add(tmp2[i]);
-            }
-
-        }
-        String pattern = httpServletRequest.getParameter("pattern");
+        } else page = 1;
+        int size = 16;
+        String pattern = request.getParameter("pattern");
 
         SearchList searchList = new SearchList();
         searchList.setKeyword(keyword);
-        searchList.setCateList(cateList);
-        searchList.setPattern(pattern);
+        if(cates != null && !cates.equals(""))
+            searchList.setCate(cates);
+        if(pattern != null && !pattern.equals(""))
+            searchList.setPattern(pattern);
         searchList.setPage(page);
         searchList.setSize(size);
-        if (seq != null && seq.equals("-")) {
+        searchList.setUser_id((Integer) request.getAttribute("user_id"));
+        if (seq != null && seq.equals("-add_time")) {
             searchList.setSeq("DESC");
         } else {
             searchList.setSeq("ASC");
         }
-        List<ImageResult> imageInfo1 = iImageInfoService.searchImage(searchList);
-
-        return imageInfo1;
+        return iImageInfoService.searchImage(searchList);
     }
 
     //获得不同状态的图片,测试完毕ok
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public List<ImageAndUserResult> getImagesByActive(HttpServletRequest request, HttpServletResponse response) {
         //假设用户id 为 1，这个地方的id可以通过token 获得
-        int uid,page,size,if_active;
-        try {
-            uid = 1;
-        } catch (Exception e) {
-            uid = 1;
-            e.printStackTrace();
-        }
-        try {
-            page = Integer.parseInt(request.getParameter("page"));
-        }catch (Exception e){
-            e.printStackTrace();
-            page = 1;
-        }
-        try {
-            size = Integer.parseInt(request.getParameter("size"));
-        }catch (Exception e){
-            e.printStackTrace();
-            size = 16;
-        }
-        try {
-            if_active = Integer.parseInt(request.getParameter("if_active"));
-        }catch (Exception e){
-            e.printStackTrace();
-            if_active = 1;
-        }
-
-        List<ImageAndUserResult> imageInfos = iImageInfoService.getImagesByActive(uid, page, size, if_active);
-
-        return imageInfos;
+        int uid = Integer.parseInt(request.getAttribute("user_id").toString());
+        int page = Integer.parseInt(request.getParameter("page"));
+        if(!(page > 0)) page = 1;
+        int size = Integer.parseInt(request.getParameter("num"));
+        int if_active = Integer.parseInt(request.getParameter("if_active"));
+        return iImageInfoService.getImagesByActive(uid, page, size, if_active);
     }
 
     //获得用户上传的图片
     @RequestMapping(value = "/user2", method = RequestMethod.GET)
     @ResponseBody
-    public List<ImageAndUserResult> getUserImages(HttpServletRequest request) {
-        //假设用户id 为 1，这个地方的id可以通过token 获得
-        int uid;
-        String tmp = null;
-//        String tmp = request.getAttribute("user_id").toString();
-        if (tmp != null && !tmp.equals("")) {
-            uid = Integer.parseInt(tmp);
-        } else {
-            uid = 1;
-        }
-        tmp = request.getParameter("page");
-        int page;
-        if (tmp != null && !tmp.equals("")) {
-            page = Integer.parseInt(tmp);
-        } else {
-            page = 1;
-        }
-
+    public Map<String, Object> getUserImages(HttpServletRequest request) {
+        int uid = Integer.parseInt(request.getAttribute("user_id").toString());
+        int page = Integer.parseInt(request.getParameter("page"));
         int size = 16;
-        List<ImageAndUserResult> imageInfos = iImageInfoService.getUserImages(uid, page, size);
-        return imageInfos;
+        return iImageInfoService.getUserImages(uid, page, size);
     }
 
     //得到各种状态图片的个数
@@ -213,17 +178,11 @@ public class ImageInfoController {
         int user = imageLike.getUser();
         boolean tag = iImageLikeService.checkImageLiked(image, user);
         if (tag) {
-            boolean cancel = iImageLikeService.cancelImageLike(image, user);
-            if (cancel)
-                return ResponseData.ok();
-            else
-                return ResponseData.badRequest("取消点赞成功");
+            iImageLikeService.cancelImageLike(image, user);
+            return ResponseData.ok();
         } else {
-            boolean like = iImageLikeService.imageLike(image, user);
-            if (like)
-                return ResponseData.ok();
-            else
-                return ResponseData.badRequest("点赞成功");
+            iImageLikeService.imageLike(image, user);
+            return ResponseData.ok();
         }
 
     }
@@ -232,8 +191,6 @@ public class ImageInfoController {
     public Map getMainImage(HttpServletRequest request,
                             @PathVariable(name = "group_id", required = true) int group_id,
                             @RequestParam("page") int page, @RequestParam("num") int num) {
-//        iImageInfoService.getMainImage(Integer.parseInt((String)request.getAttribute("user_id")), group_id, page,
-// num);
         Map<String, Object> m = new HashMap<>();
         int user_id = Integer.parseInt(request.getAttribute("user_id").toString());
         m.put("result", iImageInfoService.getMainImage(user_id, group_id, page, num));

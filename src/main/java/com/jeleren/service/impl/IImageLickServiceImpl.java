@@ -20,6 +20,7 @@ public class IImageLickServiceImpl implements IImageLikeService {
     public boolean checkImageLiked(int image, int user) {
 
         ImageLike like = iImageLikeDao.checkImageLiked(image, user);
+        System.out.println(like);
         if(like != null)
             return true;
         else
