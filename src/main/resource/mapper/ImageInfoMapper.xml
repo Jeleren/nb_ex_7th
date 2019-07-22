@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jeleren.dao.IImageInfoDao">
-    <insert id="add" parameterType="com.jeleren.bean.ImageInfo" useGeneratedKeys="true" keyProperty="id">
-        insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num,
-        collect_num, pattern
-        ) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0,
-        #{pattern})
+    <insert id="add" parameterType="com.jeleren.bean.ImageInfo"  useGeneratedKeys="true"  keyProperty="id">
+      insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num, pattern
+      ) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0, #{pattern})
         <!--<selectKey keyProperty="id" resultType="int" >-->
-        <!--SELECT @@IDENTITY AS ID-->
+            <!--SELECT @@IDENTITY AS ID-->
         <!--</selectKey>-->
-    </insert>
+  </insert>
     <!--<insert id="add" parameterType="com.jeleren.bean.ImageInfo">-->
-    <!--insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0)-->
+            <!--insert into images (image, name, cates, user_id, description, keywords, if_active, add_time, like_num, collect_num) value (#{image}, #{name}, #{cates}, #{user_id}, #{description}, #{keywords}, #{if_active}, #{add_time}, 0, 0)-->
     <!--</insert>-->
     <!--<select id="searchImage" resultType="com.jeleren.bean.ImageInfo">-->
-    <!--SELECT DISTINCT images.*-->
-    <!--FROM images-->
-    <!--inner JOIN image_keywords ON images.id = image_keywords.id-->
-    <!--<where>-->
-    <!--<if test="sList.pattern!=null">-->
-    <!--images.pattern = #{sList.pattern}-->
-    <!--</if>-->
-    <!--<if test="sList.cateList.size()>0">-->
-    <!--and images.cates in-->
-    <!--<foreach collection="sList.cateList" item="cate" open="(" separator="," close=")">-->
-    <!--#{cate}-->
-    <!--</foreach>-->
-    <!--</if>-->
-    <!--<if test="sList.keyword!=null">-->
-    <!--and image_keywords.keyword like concat('%',#{sList.keyword},'%')-->
-    <!--</if>-->
-    <!--</where>-->
-    <!--order by images.add_time ${sList.seq}-->
+        <!--SELECT DISTINCT images.*-->
+        <!--FROM images-->
+        <!--inner JOIN image_keywords ON images.id = image_keywords.id-->
+        <!--<where>-->
+            <!--<if test="sList.pattern!=null">-->
+                <!--images.pattern = #{sList.pattern}-->
+            <!--</if>-->
+            <!--<if test="sList.cateList.size()>0">-->
+                <!--and images.cates in-->
+                <!--<foreach collection="sList.cateList" item="cate" open="(" separator="," close=")">-->
+                    <!--#{cate}-->
+                <!--</foreach>-->
+            <!--</if>-->
+            <!--<if test="sList.keyword!=null">-->
+                <!--and image_keywords.keyword like concat('%',#{sList.keyword},'%')-->
+            <!--</if>-->
+        <!--</where>-->
+        <!--order by images.add_time ${sList.seq}-->
     <!--</select>-->
 
     <!--搜索结果集合，一张图片一个用户信息-->
     <resultMap id="seachResult" type="com.jeleren.bean.ImageResult">
         <id property="id" column="image_id"/>
+        <result property="if_like" column="rela_id"/>
+        <result property="if_follow" column="ur_id"/>
         <association property="user" javaType="com.jeleren.bean.UserInfo">
             <id property="id" column="id"/>
             <result property="image" column="user_image"/>
@@ -74,8 +74,10 @@
         images.like_num,
         images.collect_num,
         images.user_id,
+        images.pattern,
 
         u.username,
+        u.id,
         u.image AS user_image,
         u.fan_num,
         u.follow_num,
@@ -83,30 +85,33 @@
         u.download_num,
         u.description as u_description
 
+        uil.rela_id,
+        ur.id as ur_id
         FROM images
         inner JOIN image_keyword ON images.id = image_keyword.image_id
         inner join userinfo u on images.user_id = u.id
+        left join user_image_like uil on uil.image_id=images.id and uil.user_id = #{sList.user_id}
+        left join user_rela ur on ur.user_id = u.id and ur.fan_id = #{sList.user_id}
+
         <where>
+            images.if_active = 4
             <if test="sList.pattern!=null">
                 images.pattern = #{sList.pattern}
             </if>
-            <if test="sList.cateList !=null and sList.cateList.size()>0">
-                and
-                <foreach collection="sList.cateList" item="cate" open=" " separator="or" close=" ">
-                    images.cates like concat('%',#{cate},'%')
-                    --
-                </foreach>
+            <if test="sList.cate !=null">
+                and images.cates LIKE CONCAT('%',#{sList.cate},'%')
             </if>
             <if test="sList.keyword!=null">
-                and ( image_keyword.keyword like concat('%',#{sList.keyword},'%') or
-                images.description like concat('%',#{sList.keyword},'%') )
+                and (images.keywords LIKE CONCAT('%',#{sList.keyword},'%')
+                or images.description LIKE CONCAT('%',#{sList.keyword},'%')
+                or images.cates LIKE CONCAT('%',#{sList.keyword},'%'))
             </if>
         </where>
         order by images.add_time ${sList.seq}
     </select>
 
     <resultMap id="imageResult" type="com.jeleren.bean.ImageResult">
-        <!--<id property="id" column="id"/>-->
+        <id property="id" column="image_id"/>
         <result property="if_like" column="rela_id"/>
         <result property="if_follow" column="id"/>
         <association property="user" javaType="com.jeleren.bean.UserInfo">
@@ -121,15 +126,26 @@
             <result property="image" column="image"/>
             <result property="name" column="name"/>
             <result property="keywords" column="keywords"/>
+            <result property="pattern" column="pattern"/>
+            <result property="add_time" column="add_time"/>
+            <result property="description" column="description"/>
+            <result property="cates" column="cates"/>
+            <result property="like_num" column="like_num"/>
         </association>
     </resultMap>
     <select id="getMainImage" parameterType="int" resultMap="imageResult">
         select images.image,
         images.name,
         images.keywords,
+        images.add_time,
+        images.cates,
+        images.description,
+        images.like_num,
+        images.pattern,
         images.id as image_id,
         u.image as user_image,
         u.username,
+        u.id,
         u.upload_num,
         u.fan_num,
         uil.rela_id,
@@ -139,13 +155,17 @@
         inner join userinfo u on u.id=images.user_id
         left join user_image_like uil on uil.image_id=images.id and uil.user_id = #{user_id}
         left join user_rela ur on ur.user_id = u.id and ur.fan_id = #{user_id}
-        where ig.group_id = #{group_id}
+        where ig.group_id = #{group_id} and images.if_active = 4
     </select>
 
     <select id="getImageInfo" parameterType="int" resultMap="imageResult">
         select images.image,
         images.name,
         images.keywords,
+        images.add_time,
+        images.cates,
+        images.description,
+        images.pattern,
         images.id as image_id,
         u.image as user_image,
         u.username,
@@ -230,7 +250,7 @@
     </select>
 
     <!--根据不同的状态得到用户的图片-->
-    <select id="getImagesByActive" resultMap="imageAndUserResult">
+    <select id="getImagesByActive"  resultMap="imageAndUserResult">
       SELECT  images.id AS image_id,
         images.image,
         images.name,

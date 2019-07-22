@@ -1,19 +1,19 @@
 package com.jeleren.bean;
 
 public class ImageLike {
-    private int id;
+    private int rela_id;
     private int image;
     private int user;
 
     public ImageLike() {
     }
 
-    public int getId() {
-        return id;
+    public int getRela_id() {
+        return rela_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setRela_id(int rela_id) {
+        this.rela_id = rela_id;
     }
 
     public int getImage() {
@@ -35,7 +35,7 @@ public class ImageLike {
     @Override
     public String toString() {
         return "ImageLike{" +
-                "id=" + id +
+                "rela_id=" + rela_id +
                 ", image=" + image +
                 ", user=" + user +
                 '}';

@@ -36,7 +36,8 @@ public class GroupServiceImpl implements IGroupService {
 
     @Override
     public void addIGR(String name, int image_id) {
-        Group baseGroup = groupDao.getGroupByName(name);
+        String cate_list[] = name.split(" ");
+        Group baseGroup = groupDao.getGroupByName(cate_list[2]);
         groupDao.addIGRela(image_id, baseGroup.getId());
         groupDao.addIGRela(image_id, baseGroup.getParent_id());
         groupDao.addIGRela(image_id, groupDao.getGroupById(baseGroup.getParent_id()));

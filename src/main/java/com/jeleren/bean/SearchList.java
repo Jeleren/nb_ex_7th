@@ -14,16 +14,25 @@ import java.util.List;
  */
 public class SearchList {
     private String keyword;
-    private List<String> cateList;
+
+    private String cate;
+
+    private int user_id;
     private String pattern;
     private String seq;
     private int page;
     private int size;
-
     public SearchList(){
         keyword="";
-        pattern="";
         seq="ASC";
+    }
+
+    public String getCate() {
+        return cate;
+    }
+
+    public void setCate(String cate) {
+        this.cate = cate;
     }
 
     public int getPage() {
@@ -66,13 +75,11 @@ public class SearchList {
         this.pattern = pattern;
     }
 
-    public List<String> getCateList() {
-        return cateList;
+    public int getUser_id() {
+        return user_id;
     }
 
-    public void setCateList(List<String> cateList) {
-        this.cateList = cateList;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
-
-
 }

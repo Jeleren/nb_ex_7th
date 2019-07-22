@@ -33,7 +33,7 @@ public class LunboImgController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List getImg(){
         List<LunboImg> imgs = lunboImgService.findShowImg();
-        System.out.println(imgs.get(0));
+//        System.out.println(imgs.get(0));
         return imgs;
     }
 }
