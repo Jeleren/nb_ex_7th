@@ -119,5 +119,12 @@ public class ImageInfoServiceImpl implements IImageInfoService {
         return collectionInfos;
     }
 
+    @Override
+    public CollectionInfo getCollectionImageById(int uid, int collect_id, int page, int num) {
+        CollectionInfo collectionInfo = iImageInfoDao.getCollectionImageById(collect_id,uid);
+        PageHelper.startPage(page, num);
+        return collectionInfo;
+    }
+
 
 }

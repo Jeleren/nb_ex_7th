@@ -27,4 +27,5 @@ public interface IImageInfoService {
     void updateImage(ImageInfo imageInfo);
     List<Integer> getActiveNum();
     List<CollectionInfo> getCollectionInfo(int uid);
+    CollectionInfo getCollectionImageById(int uid, int collect_id, int page, int num);
 }

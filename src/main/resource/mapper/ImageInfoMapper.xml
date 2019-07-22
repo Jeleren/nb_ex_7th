@@ -329,5 +329,27 @@
             WHERE c.user_id = #{uid}
     </select>
 
-
+    <!--通过收藏夹id得到图片-->
+    <select id="getCollectionImageById" parameterType="_int" resultMap="collectionInfo">
+        select
+        images.id AS image_id,
+        images.image,
+        images.name,
+        images.cates,
+        images.description,
+        images.keywords,
+        images.pre_image,
+        images.if_active,
+        images.add_time,
+        images.like_num,
+        images.collect_num,
+        images.user_id,
+        c.name as c_name,
+        c.add_time as update_time,
+        c.id as id
+        from collect c
+        inner join image_collect ic on ic.collect_id = c.id
+        inner join images on images.id = ic.image_id
+        where ic.collect_id = #{collect_id} and c.user_id = #{uid}
+    </select>
 </mapper>

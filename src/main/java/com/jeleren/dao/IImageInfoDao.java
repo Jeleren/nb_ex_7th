@@ -46,6 +46,9 @@ public interface IImageInfoDao {
     // 获得集合的所有信息
     public List<CollectionInfo> getCollectionInfo(int uid);
 
+    //根据collect_id查询所有图片
+    CollectionInfo getCollectionImageById(@Param("collect_id") int collect_id,@Param("uid") int uid);
+
      void updateImage(@Param("imageInfo") ImageInfo imageInfo);
 
 
