@@ -7,6 +7,7 @@ import com.jeleren.service.IImageLikeService;
 import com.jeleren.service.IUserInfoService;
 import com.jeleren.utils.ResponseData;
 import org.apache.commons.io.FilenameUtils;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,14 +17,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: ImageInfoController <br/>
  * Description: <br/>
  * date: 2019/7/17 22:07<br/>
  *
- * @author a8243<br                                                               />
+ * @author a8243<br                                                                                                                                                                                                                                                               />
  * @since JDK 1.8
  */
 @RestController
@@ -121,15 +126,16 @@ public class ImageInfoController {
         int page;
         if (temp != null) {
             page = Integer.parseInt(temp);
-        } else page = 1;
+        } else
+            page = 1;
         int size = 16;
         String pattern = request.getParameter("pattern");
 
         SearchList searchList = new SearchList();
         searchList.setKeyword(keyword);
-        if(cates != null && !cates.equals(""))
+        if (cates != null && !cates.equals(""))
             searchList.setCate(cates);
-        if(pattern != null && !pattern.equals(""))
+        if (pattern != null && !pattern.equals(""))
             searchList.setPattern(pattern);
         searchList.setPage(page);
         searchList.setSize(size);
@@ -148,7 +154,8 @@ public class ImageInfoController {
         //假设用户id 为 1，这个地方的id可以通过token 获得
         int uid = Integer.parseInt(request.getAttribute("user_id").toString());
         int page = Integer.parseInt(request.getParameter("page"));
-        if(!(page > 0)) page = 1;
+        if (!(page > 0))
+            page = 1;
         int size = Integer.parseInt(request.getParameter("num"));
         int if_active = Integer.parseInt(request.getParameter("if_active"));
         return iImageInfoService.getImagesByActive(uid, page, size, if_active);
@@ -172,22 +179,92 @@ public class ImageInfoController {
     }
 
     // 获得集合所有的信息 测试完成
-    @RequestMapping(value = "/collect", method =RequestMethod.GET)
+    @RequestMapping(value = "/collect", method = RequestMethod.GET)
 //    @ResponseBody
-    public ResponseData getCollectionInfo(HttpServletRequest request){
+    public ResponseData getCollectionInfo(HttpServletRequest request) {
         int uid;
         try {
             uid = Integer.parseInt(request.getAttribute("id").toString());
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             uid = 5;  //设置为 5 便于测试，以后要改
         }
 
         List<CollectionInfo> collectionInfos = iImageInfoService.getCollectionInfo(uid);
-        ResponseData result =  ResponseData.ok();
-        result.putDataValue("collect",collectionInfos);
+        ResponseData result = ResponseData.ok();
+        result.putDataValue("collect", collectionInfos);
         return result;
     }
+
+    // 删除收藏夹
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+//    @ResponseBody
+    public ResponseData deleteCollectionInfo(HttpServletRequest request) {
+        int uid, collect_id;
+        try {
+            uid = Integer.parseInt(request.getAttribute("id").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            uid = 5;  //设置为 5 便于测试，以后要改
+        }
+        try {
+            collect_id = Integer.parseInt(request.getParameter("collect_id"));
+            iImageInfoService.deleteCollection(collect_id, uid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("未输入正确的collect_id");
+            return ResponseData.badRequest("未输入正确的collect_id");
+        }
+        return ResponseData.ok();
+    }
+
+    // 创建收藏夹
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+//    @ResponseBody
+    public ResponseData createCollectionInfo(HttpServletRequest request) {
+        int uid, collect_id;
+        try {
+            uid = Integer.parseInt(request.getAttribute("id").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            uid = 5;  //设置为 5 便于测试，以后要改
+        }
+        try {
+            String collectName = request.getParameter("name");
+            Date date = new Date();
+            SimpleDateFormat temp = new SimpleDateFormat("yyyy-MM-dd");
+            String date2 = temp.format(date);
+            Date date3 = temp.parse(date2);
+            iImageInfoService.createCollection(uid, collectName, date3);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseData.customerError();
+        }
+        return ResponseData.ok();
+    }
+
+    // 收藏图片
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+//    @ResponseBody
+    public ResponseData markImage(HttpServletRequest request) {
+        int uid, collect_id, image_id;
+        try {
+            uid = Integer.parseInt(request.getAttribute("id").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            uid = 5;  //设置为 5 便于测试，以后要改
+        }
+        try {
+            collect_id = Integer.parseInt(request.getParameter("collect_id"));
+            image_id = Integer.parseInt(request.getParameter("image_id"));
+            iImageInfoService.markImage(uid,collect_id,image_id);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseData.ok();
+    }
+
 
     //图片点赞或取消点赞
     @RequestMapping(value = "/like", method = RequestMethod.POST)
