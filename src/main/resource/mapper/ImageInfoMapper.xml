@@ -224,7 +224,7 @@
 
     <!--获得用户id上传的图片-->
     <select id="getUserImages" parameterType="int" resultMap="imageAndUserResult">
-        SELECT  images.id AS image_id,
+           SELECT  images.id AS image_id,
         images.image,
         images.name,
         images.cates,
@@ -363,4 +363,27 @@
             collect_num = collect_num - 1
         where id = #{image_id}
     </update>
+    <!--删除收藏夹-->
+    <delete id="deleteCollection">
+        DELETE collect,image_collect
+        FROM collect
+        JOIN image_collect  ON collect.id =  image_collect.collect_id
+        WHERE collect.id = #{collect_id} AND collect.user_id = #{uid};
+    </delete>
+
+    <!--创建收藏夹-->
+    <insert id="createCollection">
+        insert into collect (user_id, name,add_time) values(#{uid},#{collectName},#{create_date})
+    </insert>
+
+    <!--收藏图片 image_collect表 插入-->
+    <insert id="markImage_insert">
+        insert into image_collect (collect_id,image_id) values (#{collect_id},#{image_id})
+    </insert>
+
+    <!--收藏图片 image  images表 修改 -->
+    <update id="markImage_update">
+        update images set collect_num = collect_num + 1 where id = #{image_id}
+    </update>
+
 </mapper>

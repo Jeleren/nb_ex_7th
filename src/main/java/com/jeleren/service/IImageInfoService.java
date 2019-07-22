@@ -3,6 +3,7 @@ package com.jeleren.service;
 import com.jeleren.bean.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 import java.util.Map;
@@ -27,6 +28,9 @@ public interface IImageInfoService {
     void updateImage(ImageInfo imageInfo);
     List<Integer> getActiveNum();
     List<CollectionInfo> getCollectionInfo(int uid);
+    void deleteCollection(int collect_id,int uid);
+    void createCollection(int uid, String collectName, Date date);
+    void markImage(int uid ,int collect_id,int image_id);
     CollectionInfo getCollectionImageById(int uid, int collect_id, int page, int num);
     void deleteImageCollectById(int collect_id, int image_id);
     void updateImageCollectNumDeleteOneById(int image_id);

@@ -7,19 +7,21 @@ import com.jeleren.service.IImageLikeService;
 import com.jeleren.service.IUserInfoService;
 import com.jeleren.utils.ResponseData;
 import org.apache.commons.io.FilenameUtils;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.enterprise.inject.New;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: ImageInfoController <br/>
@@ -127,7 +129,8 @@ public class ImageInfoController {
         int page;
         if (temp != null) {
             page = Integer.parseInt(temp);
-        } else page = 1;
+        } else
+            page = 1;
         int size = 16;
         String pattern = request.getParameter("pattern");
 
@@ -194,6 +197,76 @@ public class ImageInfoController {
         result.putDataValue("collect",collectionInfos);
         return result;
     }
+
+    // 删除收藏夹
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+//    @ResponseBody
+    public ResponseData deleteCollectionInfo(HttpServletRequest request) {
+        int uid, collect_id;
+        try {
+            uid = Integer.parseInt(request.getAttribute("id").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            uid = 5;  //设置为 5 便于测试，以后要改
+        }
+        try {
+            collect_id = Integer.parseInt(request.getParameter("collect_id"));
+            iImageInfoService.deleteCollection(collect_id, uid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("未输入正确的collect_id");
+            return ResponseData.badRequest("未输入正确的collect_id");
+        }
+        return ResponseData.ok();
+    }
+
+    // 创建收藏夹
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+//    @ResponseBody
+    public ResponseData createCollectionInfo(HttpServletRequest request) {
+        int uid, collect_id;
+        try {
+            uid = Integer.parseInt(request.getAttribute("id").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            uid = 5;  //设置为 5 便于测试，以后要改
+        }
+        try {
+            String collectName = request.getParameter("name");
+            Date date = new Date();
+            SimpleDateFormat temp = new SimpleDateFormat("yyyy-MM-dd");
+            String date2 = temp.format(date);
+            Date date3 = temp.parse(date2);
+            iImageInfoService.createCollection(uid, collectName, date3);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseData.customerError();
+        }
+        return ResponseData.ok();
+    }
+
+    // 收藏图片
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+//    @ResponseBody
+    public ResponseData markImage(HttpServletRequest request) {
+        int uid, collect_id, image_id;
+        try {
+            uid = Integer.parseInt(request.getAttribute("id").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            uid = 5;  //设置为 5 便于测试，以后要改
+        }
+        try {
+            collect_id = Integer.parseInt(request.getParameter("collect_id"));
+            image_id = Integer.parseInt(request.getParameter("image_id"));
+            iImageInfoService.markImage(uid,collect_id,image_id);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseData.ok();
+    }
+
 
     //根据收藏夹id获得收藏夹中所有图片
     @RequestMapping(value = "/id", method = RequestMethod.GET)

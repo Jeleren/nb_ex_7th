@@ -7,10 +7,9 @@ import com.jeleren.service.IImageInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * ClassName: IImageInfoImpl <br/>
@@ -117,6 +116,22 @@ public class ImageInfoServiceImpl implements IImageInfoService {
             collectionInfos.get(i).setNum(num);
         }
         return collectionInfos;
+    }
+
+    @Override
+    public void deleteCollection(int collect_id,int uid) {
+        iImageInfoDao.deleteCollection(collect_id,uid);
+    }
+
+    @Override
+    public void createCollection(int uid, String collectName, Date date) {
+        iImageInfoDao.createCollection(uid,collectName,date);
+    }
+
+    @Override
+    public void markImage(int uid, int collect_id, int image_id) {
+        iImageInfoDao.markImage_insert(uid,collect_id,image_id);
+        iImageInfoDao.markImage_update(uid,collect_id,image_id);
     }
 
     @Override
